@@ -32,8 +32,7 @@ Homepage Tab
 
 My Bookings Tab 
 1. Upcoming bookings listing the various classes the user has booked
-2. Pending bookings for fully booked classes that the user is on the waiting list for
-3. “Share” option which allows users to send details of the class to other users/friends on the platform or to other messaging platforms by providing a link
+2. “Share” option which allows users to send details of the class to other users/friends on the platform or to other messaging platforms by providing a link
 
 Profile Tab
 1. Log out function
