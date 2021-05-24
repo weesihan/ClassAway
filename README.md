@@ -9,17 +9,15 @@ Ever find yourself googling “Things to do in Singapore” when planning for a 
 We hope to make a centralised platform that can match consumer’s interests to available classes/workshops provided by businesses through a mobile application.
 
 ## User Stories
-Users
-As a user interested in learning a new skill/ picking up a new hobby, I want to be able to find the right classes for me according to my current skill level, location and budget.
-As a user attending a class alone, I want to be able to find another individual to attend the class with.
-As a user planning a fun activity with a group of friends/family, I want to be able to find suitable classes that I can share with them and make group bookings.
-As a user who intends to book multiple classes, I want to be able to keep track of all my classes conveniently.
+#### Users
+1. As a user interested in learning a new skill/ picking up a new hobby, I want to be able to find the right classes for me according to my current skill level, location and budget.
+2. As a user planning a fun activity with a group of friends/family, I want to be able to find suitable classes that I can share with them and make group bookings.
+4. As a user who intends to book multiple classes, I want to be able to keep track of all my classes conveniently.
 
-
-Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc) 
-As a business who offers workshops and classes, I want to market my business and display available classes to potential customers in a comprehensive way.
-As a business who offers multiple classes and workshops, I want to be able to keep track of the number of vacancies and the users attending each session.]
-As a business who values customer satisfaction, I want to be able to collect user’s feedback on our classes and workshops.
+#### Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc) 
+1. As a business who offers workshops and classes, I want to market my business and display available classes to potential customers in a comprehensive way.
+2. As a business who offers multiple classes and workshops, I want to be able to keep track of the number of vacancies and the users attending each session.
+3. As a business who values customer satisfaction, I want to be able to collect user’s feedback on our classes and workshops.
 
 ## Project Scope
 ClassAway is a mobile application that allows consumers to find classes or workshops provided by local businesses that match their interests.
