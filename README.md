@@ -46,4 +46,5 @@ Profile Tab
 3. Set the max number of people each user can book on behalf of for group bookings
 4. See user ratings for each of their classes
 
+### Program Flow
 ![diagram](https://user-images.githubusercontent.com/77946288/119295687-02001280-bc8a-11eb-8622-ff0385477f8d.png)
