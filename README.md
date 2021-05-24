@@ -44,5 +44,6 @@ Profile Tab
 1. Set up a profile page that includes their business details (e.g. types of classes they offer, location, etc)
 2. Upload scheduled classes and set the relevant details such as the instructor, timing, venue, number of vacancies and price
 3. Set the max number of people each user can book on behalf of for group bookings
-4. Track users who have signed up for their activities
-5. See user ratings for each of their classes
+4. See user ratings for each of their classes
+
+![diagram](https://user-images.githubusercontent.com/77946288/119295687-02001280-bc8a-11eb-8622-ff0385477f8d.png)
