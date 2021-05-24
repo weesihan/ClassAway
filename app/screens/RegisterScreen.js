@@ -43,7 +43,37 @@ export default class Signup extends Component {
         })
         this.props.navigation.navigate('Home')
       })
-      .catch(error => this.setState({ errorMessage: error.message }))      
+      .catch(error => {this.setState({ errorMessage: error.message })
+      console.log("error", error.message, error.code)
+      switch (error.code)
+          {
+          case "auth/invalid-email":
+            this.setState({
+              isLoading: false,
+              email: '', 
+              password: ''
+            })
+          Alert.alert("Username/Email is invalid")
+          break;
+
+          case "auth/weak-password":
+            this.setState({
+              isLoading: false,
+              email: '', 
+              password: ''
+            })
+          Alert.alert("Password is invalid, requires minimum 6 characters")
+          break;
+
+          default:
+             Alert.alert("Invalid user")
+             this.setState({
+              isLoading: false,
+              email: '', 
+              password: ''
+            })
+          }
+      })
     }
   }
 
