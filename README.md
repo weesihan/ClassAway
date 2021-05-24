@@ -24,7 +24,7 @@ As a business who values customer satisfaction, I want to be able to collect use
 ## Project Scope
 ClassAway is a mobile application that allows consumers to find classes or workshops provided by local businesses that match their interests.
 
-### Proposed Consumer features
+#### Proposed Consumer features
 
 Homepage Tab
 1. A search bar that allows users to easily find classes by toggling various filters to their preference by their location, timing, price and reviews
