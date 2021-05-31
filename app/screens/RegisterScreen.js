@@ -1,16 +1,32 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Switch, Alert, ActivityIndicator } from 'react-native';
 import firebase from '../database/firebase';
 
 export default class Signup extends Component {
-    
+
   constructor() {
     super();
-    this.state = { 
+    this.state = {
       displayName: '',
-      email: '', 
+      email: '',
       password: '',
-      isLoading: false
+      isLoading: false,
+      isUser: false,
+      role: 'business',
+    }
+  }
+
+  toggleFunction = () => {
+    if (this.state.isUser) {
+      this.setState({
+        isUser: false,
+        role: 'business'
+      })
+    } else {
+      this.setState({
+        isUser: true,
+        role: 'user'
+      })
     }
   }
 
@@ -21,50 +37,80 @@ export default class Signup extends Component {
   }
 
   registerUser = () => {
-    if(this.state.email === '' && this.state.password === '') {
+    if (this.state.email === '' && this.state.password === '') {
       Alert.alert('Enter details to sign up!')
     } else {
       this.setState({
         isLoading: true,
       })
       firebase
-      .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then((res) => {
-        res.user.updateProfile({
-          displayName: this.state.displayName
+        .auth()
+        .createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then((res) => {
+          res.user.updateProfile({
+            displayName: this.state.displayName
+          })
+          console.log('User registered successfully!')
+          this.setState({
+            isLoading: false,
+            displayName: '',
+            email: '',
+            password: ''
+          })
+          this.props.navigation.navigate('Home')
         })
-        console.log('User registered successfully!')
-        this.setState({
-          isLoading: false,
-          displayName: '',
-          email: '', 
-          password: ''
+        .catch(error => {
+          this.setState({ errorMessage: error.message })
+          console.log("error", error.message, error.code)
+          switch (error.code) {
+            case "auth/invalid-email":
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
+              Alert.alert("Username/Email is invalid")
+              break;
+
+            case "auth/weak-password":
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
+              Alert.alert("Password is invalid, requires minimum 6 characters")
+              break;
+
+            default:
+              Alert.alert("Invalid user")
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
+          }
         })
-        this.props.navigation.navigate('Home')
-      })
-      .catch(error => this.setState({ errorMessage: error.message }))      
     }
   }
 
   render() {
-    
-    if(this.state.isLoading){
-      return(
+
+    if (this.state.isLoading) {
+      return (
         <View style={styles.preloader}>
-          <ActivityIndicator size="large" color="#9E9E9E"/>
+          <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       )
-    }    
+    }
     return (
-      <View style={styles.container}> 
+      <View style={styles.container}>
         <Text style={styles.title}>Create new account</Text>
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
           value={this.state.displayName}
           onChangeText={(val) => this.updateInputVal(val, 'displayName')}
-        />      
+        />
         <TextInput
           style={styles.inputStyle}
           placeholder="Email"
@@ -78,29 +124,53 @@ export default class Signup extends Component {
           onChangeText={(val) => this.updateInputVal(val, 'password')}
           maxLength={15}
           secureTextEntry={true}
-        />   
-        <View style={{ flexDirection:"row" }}>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.registerUser()}
-        >
-        <Text style={styles.buttonText}>I'M A USER</Text>
+        />
+
+        {this.state.isUser ?
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              style={[styles.buttonLeft, styles.buttonOn]}
+              disabled={true}
+            >
+              <Text style={styles.buttonTextOn}>I'M A USER</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.buttonRight, styles.buttonOff]}
+              onPress={this.toggleFunction}
+            >
+              <Text style={styles.buttonTextOff}>I'M A BUSINESS</Text>
+            </TouchableOpacity>
+          </View>
+          :
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              style={[styles.buttonLeft, styles.buttonOff]}
+              onPress={this.toggleFunction}
+            >
+              <Text style={styles.buttonTextOff}>I'M A USER</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.buttonRight, styles.buttonOn]}
+              disabled={true}
+            >
+              <Text style={styles.buttonTextOn}>I'M A BUSINESS</Text>
+            </TouchableOpacity>
+          </View>
+        }
+
+        <TouchableOpacity style={styles.button}>
+          <Text fontFamily='Poppins-Light'>SIGN UP</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.registerUser()}
-        >
-        <Text style={styles.buttonText}>I'M A BUSINESS</Text>
-        </TouchableOpacity>
-        </View>
-      
-
-        <Text 
+        <Text
           style={styles.loginText}
           onPress={() => this.props.navigation.navigate('Login')}>
           Already Registered? Click here to login
-        </Text>                          
+        </Text>
+
+
       </View>
     );
   }
@@ -140,15 +210,23 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 300,
     fontFamily: 'Poppins-Medium',
-    },
-    buttonText: {
-      color: 'black',
-      fontFamily: 'Poppins-Medium'
-    },
-    title: {
+  },
+  buttonText: {
+    color: '#3740FE',
+    fontFamily: 'Poppins-Medium'
+  },
+  buttonTextOn: {
+    color: 'white',
+    fontFamily: 'Poppins-Medium'
+  },
+  buttonTextOff: {
+    color: 'grey',
+    fontFamily: 'Poppins-Light'
+  },
+  title: {
     fontSize: 30,
     fontFamily: 'Poppins-Bold',
-    },
+  },
   button: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
@@ -156,5 +234,27 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontFamily: 'Poppins-Medium',
     margin: 10,
+  },
+  buttonLeft: {
+    alignItems: "center",
+    padding: 10,
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    marginVertical: 10,
+    margin: 0,
+  },
+  buttonRight: {
+    alignItems: "center",
+    padding: 10,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    marginVertical: 10,
+    margin: 0,
+  },
+  buttonOff: {
+    backgroundColor: "#DDDDDD",
+  },
+  buttonOn: {
+    backgroundColor: '#3740FE',
   },
 });
