@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, SafeAreaView } from 'react-native';
-
+import firebase from '../database/firebase';
 
 export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
         <Text style={styles.classText}>
-            Hello!
+            Welcome back {firebase.auth().currentUser.displayName}!
         </Text>
         </SafeAreaView>
     );

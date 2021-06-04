@@ -55,7 +55,6 @@ export default class Signup extends Component {
                 name: this.state.displayName,
                 email: this.state.email,
             })
-        console.log(uid)
         console.log('User registered successfully!')
         this.setState({
           isLoading: false,

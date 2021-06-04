@@ -14,7 +14,7 @@ export default function ProfileScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
         <Text style={styles.classText}>
-            Hello!
+            Welcome back {firebase.auth().currentUser.displayName}!
         </Text>
         <TouchableOpacity style={styles.button}
             onPress={logout}
