@@ -10,6 +10,7 @@ import SplashScreen from "../screens/SplashScreen.js";
 import MyBookingsScreen from "../screens/MyBookingsScreen.js";
 import ProfileScreen from "../screens/ProfileScreen.js";
 import MakeBookingScreen from "../screens/MakeBookingScreen.js";
+import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -67,6 +68,7 @@ export default function Navigation() {
                 <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="Login" component={LogInScreen} />
                 <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen name="RegisterBusiness" component={RegisterBusinessScreen} />
                 <Stack.Screen name="Home" component={HomeTabs} />
     
             </Stack.Navigator>
