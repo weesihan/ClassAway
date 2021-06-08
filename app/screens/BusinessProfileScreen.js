@@ -4,7 +4,7 @@ import firebase from '../database/firebase';
 import { Avatar, Title, TouchableRipple } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function ProfileScreen({ navigation }) {
+export default function BusinessProfileScreen({ navigation }) {
 
     const logout = () => {
         firebase
@@ -36,11 +36,25 @@ export default function ProfileScreen({ navigation }) {
                     </View>
                 </View>
             </View>
+            <View style={styles.userInfo}>
+                <View style={styles.row}>
+                    <AntDesign name="enviromento" color="black" size={20}/>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Phone Number</Text>
+                </View>
+                <View style={styles.row}>
+                    <AntDesign name="phone" color="black" size={20}/>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Address</Text>
+                </View>
+                <View style={styles.row}>
+                    <AntDesign name="idcard" color="black" size={20}/>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Description</Text>
+                </View>
+            </View>
             <View style={styles.menuWrapper}>
                 <TouchableRipple onPress={() => {}}>
                 <View style={styles.menuItem}>
                     <AntDesign name="profile" color="black" size={25}/>
-                    <Text style={styles.menuItemText}>Past Classes</Text>
+                    <Text style={styles.menuItemText}>All Classes</Text>
                 </View>
                 </TouchableRipple>
                 <TouchableRipple onPress={() => {}}>
@@ -62,6 +76,10 @@ const styles = StyleSheet.create({
     userInfo:{
         paddingHorizontal: 30,
         marginBottom: 25,
+    },
+    row: {
+        flexDirection: 'row',
+        marginBottom: 10,
     },
     classText: {
         fontFamily: 'Poppins-Bold',

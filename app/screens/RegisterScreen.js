@@ -8,7 +8,7 @@ export default class Signup extends Component {
   constructor() {
     super();
     this.state = { 
-      displayName: '',
+      display: '',
       email: '', 
       password: '',
       isUser: false,
@@ -48,22 +48,24 @@ export default class Signup extends Component {
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then((result) => {
+        const user = firebase.auth().currentUser
+        user.updateProfile({displayName: this.state.display})
         const uid = firebase.auth().currentUser.uid
         firebase.firestore().collection(this.state.role)
             .doc(uid)
             .set({
-                name: this.state.displayName,
+                name: this.state.display,
                 email: this.state.email,
             })
         console.log('User registered successfully!')
         this.setState({
           isLoading: false,
-          displayName: '',
+          display: '',
           email: '', 
           password: ''
         })
         if (this.state.isUser) {
-          this.props.navigation.navigate('Home')
+          this.props.navigation.navigate('Login')
         } else {
           this.props.navigation.navigate('RegisterBusiness', {uid: firebase.auth().currentUser.uid})
         }
@@ -81,13 +83,13 @@ export default class Signup extends Component {
           Alert.alert("Username/Email is invalid")
           break;
 
-          case "auth/invalid-email":
+          case "auth/email-already-in-use":
             this.setState({
               isLoading: false,
               email: '', 
               password: ''
             })
-          Alert.alert("Username/Email is invalid")
+          Alert.alert("Username/Email is invalid as it already exists")
           break;
 
           case "auth/weak-password":
@@ -126,8 +128,8 @@ export default class Signup extends Component {
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
-          value={this.state.displayName}
-          onChangeText={(val) => this.updateInputVal(val, 'displayName')}
+          value={this.state.display}
+          onChangeText={(val) => this.updateInputVal(val, 'display')}
         />
         <TextInput
           style={styles.inputStyle}

@@ -18,9 +18,8 @@ export default function RegisterBusiness(props) {
                   description: description,
                   number: number,
               }, { merge: true })
-              console.log(props.route.params.uid)  
           console.log('Business registered successfully!')
-          props.navigation.navigate('Home')
+          props.navigation.navigate('Login')
         }
       }
 
