@@ -33,13 +33,13 @@ export default class Login extends Component {
         .then((res) => {
           console.log(res)
           console.log('User logged-in successfully!')
+          const email = this.state.email;
           this.setState({
             isLoading: false,
             email: '',
             password: ''
           })
-          const uid = firebase.auth().currentUser.uid
-          firebase.firestore().collection('Accounts').doc(uid).get().then((doc) => {
+          firebase.firestore().collection('Accounts').doc(email).get().then((doc) => {
             console.log(doc.data().isUser)
             doc.data().isUser ? this.props.navigation.navigate('Home') : this.props.navigation.navigate('MyClasses')
           })

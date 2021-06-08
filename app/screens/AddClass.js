@@ -17,7 +17,7 @@ export default function AddClass(props) {
             description: description,
             cost: cost,
             date: date,
-            admin: firebase.auth().currentUser.uid
+            admin: firebase.auth().currentUser.email
             //venue/author: current shop's name
             //time
             //difficulty:

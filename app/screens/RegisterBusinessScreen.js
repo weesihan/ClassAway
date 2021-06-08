@@ -11,8 +11,8 @@ export default function RegisterBusiness(props) {
         if (address === '' || description === '' || number === '' ) {
           Alert.alert('Enter details to sign up!')
         } else {
-          firebase.firestore().collection('Business')
-              .doc(props.route.params.uid)
+          firebase.firestore().collection("Accounts")
+              .doc(props.route.params.email)
               .set({
                   address: address,
                   description: description,

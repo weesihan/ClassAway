@@ -50,12 +50,14 @@ export default class Signup extends Component {
       .then((result) => {
         const user = firebase.auth().currentUser
         user.updateProfile({displayName: this.state.display})
-        const uid = firebase.auth().currentUser.uid
-        firebase.firestore().collection(this.state.role)
-            .doc(uid)
+        const email = this.state.email;
+        /* const uid = firebase.auth().currentUser.uid */
+        firebase.firestore().collection("Accounts")
+            .doc(email)
             .set({
                 name: this.state.display,
                 email: this.state.email,
+                isUser: this.state.isUser,
             })
         console.log('User registered successfully!')
         this.setState({
@@ -67,7 +69,7 @@ export default class Signup extends Component {
         if (this.state.isUser) {
           this.props.navigation.navigate('Login')
         } else {
-          this.props.navigation.navigate('RegisterBusiness', {uid: firebase.auth().currentUser.uid})
+          this.props.navigation.navigate('RegisterBusiness', {email: email})
         }
       })
       .catch(error => {this.setState({ errorMessage: error.message })
