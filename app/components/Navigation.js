@@ -11,18 +11,20 @@ import MyBookingsScreen from "../screens/MyBookingsScreen.js";
 import ProfileScreen from "../screens/ProfileScreen.js";
 import MakeBookingScreen from "../screens/MakeBookingScreen.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
+import BizHomeScreen from "../screens/MyClasses.js";
+import AddClassScreen from "../screens/AddClass.js";
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
 function HomeTabs() {
-  return (
-    <Tab.Navigator
-        initialRouteName="Home"
-        tabBarOptions={{
-            activeTintColor: 'black',
-    }}>
-      <Tab.Screen
+    return (
+        <Tab.Navigator
+            initialRouteName="Home"
+            tabBarOptions={{
+                activeTintColor: 'black',
+            }}>
+            <Tab.Screen
                 name="Home"
                 component={HomeScreen}
                 options={{
@@ -32,7 +34,7 @@ function HomeTabs() {
                     ),
                 }}
             />
-      <Tab.Screen
+            <Tab.Screen
                 name="My Bookings"
                 component={MyBookingsScreen}
                 options={{
@@ -42,7 +44,7 @@ function HomeTabs() {
                     ),
                 }}
             />
-      <Tab.Screen
+            <Tab.Screen
                 name="Profile"
                 component={ProfileScreen}
                 options={{
@@ -52,9 +54,53 @@ function HomeTabs() {
                     ),
                 }}
             />
-    </Tab.Navigator>
-  );
+        </Tab.Navigator>
+    );
 }
+
+const bizTab = createBottomTabNavigator();
+
+function BizTabs() {
+    return (
+        <bizTab.Navigator
+            initialRouteName="MyClasses"
+            tabBarOptions={{
+                activeTintColor: 'black',
+            }}>
+            <bizTab.Screen
+                name="MyClasses"
+                component={BizHomeScreen}
+                options={{
+                    tabBarLabel: 'My Classes',
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="book" color={color} size={size} />
+                    ),
+                }}
+            />
+            <bizTab.Screen
+                name="AddClass"
+                component={AddClassScreen}
+                options={{
+                    tabBarLabel: 'Add Class',
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="book" color={color} size={size} />
+                    ),
+                }}
+            />
+            <bizTab.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                    tabBarLabel: 'Profile',
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="user" color={color} size={size} />
+                    ),
+                }}
+            />
+        </bizTab.Navigator>
+    );
+}
+
 
 const Stack = createStackNavigator();
 export default function Navigation() {
@@ -70,9 +116,10 @@ export default function Navigation() {
                 <Stack.Screen name="Register" component={RegisterScreen} />
                 <Stack.Screen name="RegisterBusiness" component={RegisterBusinessScreen} />
                 <Stack.Screen name="Home" component={HomeTabs} />
-    
+                <Stack.Screen name="MyClasses" component={BizTabs} />
+
             </Stack.Navigator>
         </NavigationContainer>
-      );
+    );
 }
 

@@ -4,11 +4,11 @@ import firebase from '../database/firebase';
 
 
 export default class Login extends Component {
-  
+
   constructor() {
     super();
-    this.state = { 
-      email: '', 
+    this.state = {
+      email: '',
       password: '',
       isLoading: false
     }
@@ -21,69 +21,74 @@ export default class Login extends Component {
   }
 
   userLogin = () => {
-    if(this.state.email === '' && this.state.password === '') {
+    if (this.state.email === '' && this.state.password === '') {
       Alert.alert('Enter details to signin!')
     } else {
       this.setState({
         isLoading: true,
       })
       firebase
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((res) => {
-        console.log(res)
-        console.log('User logged-in successfully!')
-        this.setState({
-          isLoading: false,
-          email: '', 
-          password: ''
+        .auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then((res) => {
+          console.log(res)
+          console.log('User logged-in successfully!')
+          this.setState({
+            isLoading: false,
+            email: '',
+            password: ''
+          })
+          const uid = firebase.auth().currentUser.uid
+          firebase.firestore().collection('Accounts').doc(uid).get().then((doc) => {
+            console.log(doc.data().isUser)
+            doc.data().isUser ? this.props.navigation.navigate('Home') : this.props.navigation.navigate('MyClasses')
+          })
         })
-        this.props.navigation.navigate('Home')
-      })
-      .catch(error => {this.setState({ errorMessage: error.message })
-      console.log("error", error.message, error.code)
-      switch (error.code)
-          {
-          case "auth/invalid-email":
-            this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
-          Alert.alert("Username/Email is invalid")
-          break;
+        .catch(error => {
+          this.setState({ errorMessage: error.message })
+          console.log("error", error.message, error.code)
+          switch (error.code) {
+            case "auth/invalid-email":
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
+              Alert.alert("Username/Email is invalid")
+              break;
 
-          case "auth/wrong-password":
-            this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
-          Alert.alert("Password is invalid")
-          break;
+            case "auth/wrong-password":
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
+              Alert.alert("Password is invalid")
+              break;
 
-          default:
-             Alert.alert("Invalid user")
-             this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
+            default:
+              Alert.alert("Invalid user")
+              this.setState({
+                isLoading: false,
+                email: '',
+                password: ''
+              })
           }
-      })
+        })
     }
   }
 
+
   render() {
-    if(this.state.isLoading){
-      return(
+    if (this.state.isLoading) {
+      return (
         <View style={styles.preloader}>
-          <ActivityIndicator size="large" color="#9E9E9E"/>
+          <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       )
-    }    
+    }
     return (
-      <View style={styles.container}>  
+      <View style={styles.container}>
         <Text style={styles.title}>Log In</Text>
         <TextInput
           style={styles.inputStyle}
@@ -98,23 +103,23 @@ export default class Login extends Component {
           onChangeText={(val) => this.updateInputVal(val, 'password')}
           maxLength={15}
           secureTextEntry={true}
-        />   
-        
+        />
+
         <View>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.button}
             onPress={() => this.userLogin()}
-        >
-        <Text>SIGN IN</Text>
-        </TouchableOpacity>
+          >
+            <Text>SIGN IN</Text>
+          </TouchableOpacity>
         </View>
- 
 
-        <Text 
+
+        <Text
           style={styles.loginText}
           onPress={() => this.props.navigation.navigate('Register')}>
           Don't have account? Click here to signup
-        </Text>                          
+        </Text>
       </View>
     );
   }
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontFamily: 'Poppins-Bold',
-    },
+  },
   inputStyle: {
     borderWidth: 1,
     borderColor: '#A6A6A6',
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 300,
     fontFamily: 'Poppins-Medium',
-},
+  },
   loginText: {
     color: '#3740FE',
     marginTop: 25,
