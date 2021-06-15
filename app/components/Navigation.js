@@ -9,6 +9,7 @@ import HomeScreen from "../screens/HomeScreen.js";
 import SplashScreen from "../screens/SplashScreen.js";
 import MyBookingsScreen from "../screens/MyBookingsScreen.js";
 import ProfileScreen from "../screens/ProfileScreen.js";
+import BusinessProfileScreen from "../screens/BusinessProfileScreen.js";
 import MakeBookingScreen from "../screens/MakeBookingScreen.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
@@ -88,8 +89,8 @@ function BizTabs() {
                 }}
             />
             <bizTab.Screen
-                name="Profile"
-                component={ProfileScreen}
+                name="BusinessProfile"
+                component={BusinessProfileScreen}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
