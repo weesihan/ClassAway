@@ -18,8 +18,7 @@ export default function AddClass(props) {
     const [transferred, setTransferred] = useState(0);
     const [date, setDate] = useState(new Date(1598051730000));
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [chosenDate, setDatePicker] = useState("");
-    const [chosenStartTime, setStartTimePicker] = useState("");
+    const [chosenDateTime, setDateTimePicker] = useState("");
 
     const showDatePicker = () => {
       setDatePickerVisibility(true);
@@ -31,6 +30,8 @@ export default function AddClass(props) {
 
     const handleConfirm = (date) => {
       setDate(date)
+      const formatted = moment(date).format('MMMM Do YYYY, h:mm:ss a');
+      setDateTimePicker(formatted);
       console.log("A date has been picked: ", date);
       hideDatePicker();
     };
@@ -255,6 +256,7 @@ export default function AddClass(props) {
                 onCancel={hideDatePicker}
               />
             </View>
+            <Text style={styles.inputStyle}> {chosenDateTime} </Text>
             <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity
                     style={styles.button}
