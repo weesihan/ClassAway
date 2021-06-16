@@ -1,10 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import firebase from '../database/firebase';
 import { Avatar, Title, TouchableRipple } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function BusinessProfileScreen({ navigation }) {
+    const [address, setAddress] = useState("");
+    const [phoneNumber, setNumber] = useState("");
+    const [description, setDescription] = useState("");
+
+    const email = firebase.auth().currentUser.email;
+
+    useEffect(() => {
+        firebase
+            .firestore()
+            .collection('Accounts')
+            .doc(email)
+            .get()
+            .then((snapshot) => {
+                setAddress(snapshot.data().address)
+                setNumber(snapshot.data().number)
+                setDescription(snapshot.data().description)
+            })
+            .catch((e) => console.log('Errors while downloading => ', e));
+      }, []);
 
     const logout = () => {
         firebase
@@ -39,15 +58,15 @@ export default function BusinessProfileScreen({ navigation }) {
             <View style={styles.userInfo}>
                 <View style={styles.row}>
                     <AntDesign name="enviromento" color="black" size={20}/>
-                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Phone Number</Text>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>{address}</Text>
                 </View>
                 <View style={styles.row}>
                     <AntDesign name="phone" color="black" size={20}/>
-                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Address</Text>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>{phoneNumber}</Text>
                 </View>
                 <View style={styles.row}>
                     <AntDesign name="idcard" color="black" size={20}/>
-                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>Description</Text>
+                    <Text style={{color:"black", marginLeft: 20, fontFamily: 'Poppins-Medium'}}>{description}</Text>
                 </View>
             </View>
             <View style={styles.menuWrapper}>
