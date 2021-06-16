@@ -27,6 +27,7 @@
     "react-native-app-auth": "^6.2.0",
     "react-native-button-toggle-group": "^1.1.1",
     "react-native-datepicker": "^1.7.2",
+    "react-native-dropdown-picker": "^5.1.21",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-imaged-carousel-card": "^0.1.1",
     "react-native-modal-datetime-picker": "^10.0.0",
