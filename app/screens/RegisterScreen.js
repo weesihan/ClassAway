@@ -50,6 +50,7 @@ export default class Signup extends Component {
       .then((result) => {
         const user = firebase.auth().currentUser
         user.updateProfile({displayName: this.state.display})
+        user.updateProfile({photoURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_24787.png&f=1&nofb=1"})
         const email = this.state.email;
         /* const uid = firebase.auth().currentUser.uid */
         firebase.firestore().collection("Accounts")
