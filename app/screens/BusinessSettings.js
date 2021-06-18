@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform, Button, SafeAreaView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
 import BottomSheet from 'reanimated-bottom-sheet';
 import firebase from '../database/firebase';
@@ -239,7 +239,7 @@ export default function BusinessSettings(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <View lignItems="center" justifyContent="center">
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
@@ -259,9 +259,15 @@ export default function BusinessSettings(props) {
           value={userData ? userData.number : ''}
           onChangeText={(txt) => setUserData({...userData, number: txt})}
         />
-      </View>
-
-
+        <TextInput
+          multiline
+          numberOfLines={4}
+          style={styles.inputStyle}
+          placeholder="Description"
+          value={userData ? userData.description : ''}
+          onChangeText={(txt) => setUserData({...userData, description: txt})}
+        />
+      
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           style={styles.button}
@@ -272,6 +278,7 @@ export default function BusinessSettings(props) {
           <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
