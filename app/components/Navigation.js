@@ -10,6 +10,7 @@ import SplashScreen from "../screens/SplashScreen.js";
 import MyBookingsScreen from "../screens/MyBookingsScreen.js";
 import ProfileScreen from "../screens/ProfileScreen.js";
 import BusinessProfileScreen from "../screens/BusinessProfileScreen.js";
+import BusinessSettings from "../screens/BusinessSettings.js";
 import MakeBookingScreen from "../screens/MakeBookingScreen.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
@@ -59,6 +60,25 @@ function HomeTabs() {
     );
 }
 
+const BizProfileStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="BizProfile"
+        component={BusinessProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="BusinessSettings"
+        component={BusinessSettings}
+        options={{
+        headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+
 const bizTab = createBottomTabNavigator();
 
 function BizTabs() {
@@ -90,7 +110,7 @@ function BizTabs() {
             />
             <bizTab.Screen
                 name="BusinessProfile"
-                component={BusinessProfileScreen}
+                component={BizProfileStack}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
