@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform, Button, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
 import BottomSheet from 'reanimated-bottom-sheet';
 import firebase from '../database/firebase';
@@ -18,7 +18,7 @@ export default function AddClass(props) {
   const [transferred, setTransferred] = useState(0);
   const [date, setDate] = useState(new Date(1598051730000));
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [chosenDateTime, setDateTimePicker] = useState("");
+  const [chosenDateTime, setDateTimePicker] = useState("Select date and time");
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([
     { label: 'Lifestyle', value: 'lifestyle' },
@@ -40,7 +40,7 @@ export default function AddClass(props) {
     setTransferred(0);
     setDate(new Date(Date.now()));
     setDatePickerVisibility(false);
-    setDateTimePicker("");
+    setDateTimePicker("Select date and time");
     setCategories([]);
     setOpen(false);
   }
@@ -164,14 +164,16 @@ export default function AddClass(props) {
         style={styles.panelButton}
         onPress={() => {
           takePhotoFromCamera()
-          bs.current.snapTo(1)}}>
+          bs.current.snapTo(1)
+        }}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
         onPress={() => {
           choosePhotoFromLibrary()
-          bs.current.snapTo(1)}}>
+          bs.current.snapTo(1)
+        }}>
         <Text style={styles.panelButtonTitle}>Choose From Library</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -300,19 +302,20 @@ export default function AddClass(props) {
         <DropDownPicker
           multiple={true}
           min={1}
-          placeholder="Choose a category"
+          placeholder="Select a category"
           open={open}
           value={categories}
           items={items}
           setOpen={setOpen}
           setValue={setCategories}
           setItems={setItems}
-          style={styles.pickerMenu}
           placeholderStyle={{ color: "grey" }}
           dropDownDirection='TOP'
           selectedItemLabelStyle={styles.selectedText}
           listItemLabelStyle={styles.pickerText}
           onChangeValue={(value) => console.log(value)}
+          containerStyle={styles.pickerMenu}
+          placeholderStyle={styles.pickerText}
         />
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -365,7 +368,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     borderWidth: 1,
-    borderColor: '#A6A6A6',
+    borderColor: 'black',
     borderRadius: 8,
     padding: 8,
     margin: 10,
@@ -373,7 +376,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   dateStyle: {
-    borderColor: '#A6A6A6',
+    borderColor: 'black',
     borderWidth: 1,
     borderRightWidth: 0,
     borderTopLeftRadius: 8,
@@ -383,11 +386,12 @@ const styles = StyleSheet.create({
     width: 260,
     height: 45,
     fontFamily: 'Poppins-Medium',
+    color: '#A6A6A6'
   },
   sideIcon: {
     borderWidth: 1,
     borderLeftWidth: 0,
-    borderColor: '#A6A6A6',
+    borderColor: 'black',
     borderBottomRightRadius: 8,
     borderTopRightRadius: 8,
     padding: 8,
@@ -457,22 +461,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   pickerMenu: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
     width: 300,
-    padding: 20,
-    marginBottom: 10,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    borderColor: '#A6A6A6'
+    margin: 10,
   },
   selectedText: {
     color: '#3740FE',
     fontFamily: 'Poppins-Bold',
   },
   pickerText: {
-    color: 'grey',
+    color: '#A6A6A6',
     fontFamily: 'Poppins-Medium',
   },
   selectText: {
