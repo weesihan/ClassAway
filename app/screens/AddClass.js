@@ -4,8 +4,6 @@ import * as ImagePicker from 'expo-image-picker'
 import BottomSheet from 'reanimated-bottom-sheet';
 import firebase from '../database/firebase';
 import { AntDesign } from '@expo/vector-icons';
-//import DatePicker from 'react-native-datepicker';
-//import { TimePicker } from 'react-native-simple-time-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -31,6 +29,7 @@ export default function AddClass(props) {
     { label: 'Others', value: 'others' },
   ]);
   const [open, setOpen] = useState(false);
+  const bs = React.createRef();
 
   const clearState = () => {
     setClassName("");
@@ -163,12 +162,16 @@ export default function AddClass(props) {
       </View>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={takePhotoFromCamera}>
+        onPress={() => {
+          takePhotoFromCamera()
+          bs.current.snapTo(1)}}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={choosePhotoFromLibrary}>
+        onPress={() => {
+          choosePhotoFromLibrary()
+          bs.current.snapTo(1)}}>
         <Text style={styles.panelButtonTitle}>Choose From Library</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -209,8 +212,6 @@ export default function AddClass(props) {
       props.navigation.navigate('MyClasses')
     }
   }
-
-  const bs = React.createRef();
 
   return (
     <View style={styles.container}>
@@ -284,7 +285,7 @@ export default function AddClass(props) {
       <View flexDirection="row" alignItems="center" justifyContent="center">
         <Text style={styles.dateStyle}> {chosenDateTime}</Text>
         <TouchableOpacity style={styles.sideIcon} onPress={showDatePicker}>
-          <AntDesign name="calendar" color={grey} size={20} />
+          <AntDesign name="calendar" color={"grey"} size={20} />
         </TouchableOpacity>
       </View>
 
@@ -415,17 +416,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     shadowColor: '#333333',
     shadowOffset: { width: -1, height: -3 },
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
+    shadowRadius: 1,
+    shadowOpacity: 0.2,
     paddingTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
   },
   panel: {
     padding: 20,
     backgroundColor: '#FFFFFF',
     paddingTop: 20,
     width: '100%',
+    paddingBottom: 40
   },
   panelHeader: {
     alignItems: 'center',
@@ -435,10 +438,9 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: '#00000040',
-    marginBottom: 10,
   },
   panelTitle: {
-    fontSize: 27,
+    fontSize: 20,
     height: 35,
     fontFamily: 'Poppins-Bold'
   },
