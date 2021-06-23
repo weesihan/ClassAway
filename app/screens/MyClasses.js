@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, SafeAreaView, ScrollView, Image, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, RefreshControl } from 'react-native';
 import firebase from '../database/firebase';
 import Card from '../components/Card.js'
+import { set } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
+export default function MyClasses(props) {
 
-export default function MyClasses({ navigation }) {
-    const [classes, setClasses] = useState([]);
+    const [classes, setClasses] = useState([])
+    const [isFetching, setFetching] = useState(true)
+    const [refreshing, setRefreshing] = useState(false);
 
-    useEffect(() => {
-        firebase
-            .firestore()
-            .collection('Classes')
-            .where("admin", "==", firebase.auth().currentUser.email)
-            .get()
-            .then((snapshot) => {
-                console.log(classes);
-                snapshot.forEach((doc) => {
-                    console.log(doc.data());
-                    classes.push(doc.data());
-                    console.log(classes)
-                });
-
-            })
-            .catch((e) => console.log('Errors while downloading => ', e));
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getData();
+        wait(2000).then(() => setRefreshing(false));
     }, []);
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.classText}>
-                My classes
-            </Text>
-            <FlatList data={classes} renderItem={({ item }) => (
-                <View alignItems="center" justifyContent="center">
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
+
+    const cardSelected = () => {
+        console.log("class pressed")
+        props.navigation.navigate("ClassDetails")
+    }
+
+    const renderItem = ({ item }) => {
+        return (
+            <View alignItems="center" justifyContent="center">
+                <TouchableOpacity onPress={cardSelected}>
                     <Card>
                         <Image style={styles.cardImg} source={{ uri: item.pic }} />
                         <View style={styles.cardContent}>
@@ -39,9 +39,50 @@ export default function MyClasses({ navigation }) {
                             <Text style={styles.descText}>{item.description}</Text>
                         </View>
                     </Card>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 
-                </View>
-            )}
+    const getData = () => {
+        setFetching(true)
+        console.log(isFetching)
+        var tempClasses = []
+        firebase
+            .firestore()
+            .collection('Classes')
+            .where("admin", "==", firebase.auth().currentUser.email)
+            .get()
+            .then((snapshot) => {
+                console.log(tempClasses);
+                snapshot.forEach((doc) => {
+                    console.log(doc.data());
+                    tempClasses.push(doc.data());
+                    console.log(tempClasses)
+
+                });
+                setClasses(tempClasses)
+                setFetching(false)
+                console.log(classes)
+                console.log(isFetching)
+            }
+            )
+    }
+
+    useEffect(() => { getData() }, []);
+
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.classText}>
+                My classes
+            </Text>
+            <FlatList
+                data={classes}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.title}
+                extraData={classes}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             />
         </SafeAreaView>
 

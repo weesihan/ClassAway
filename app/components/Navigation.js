@@ -15,6 +15,7 @@ import MakeBookingScreen from "../screens/MakeBookingScreen.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
 import AddClassScreen from "../screens/AddClass.js";
+import ClassDetailsScreen from '../screens/ClassDetails';
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -62,22 +63,22 @@ function HomeTabs() {
 
 const BizProfileStack = () => (
     <Stack.Navigator>
-      <Stack.Screen
-        name="BizProfile"
-        component={BusinessProfileScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="BusinessSettings"
-        component={BusinessSettings}
-        options={{
-        headerShown: false,
-        }}
-      />
+        <Stack.Screen
+            name="BizProfile"
+            component={BusinessProfileScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="BusinessSettings"
+            component={BusinessSettings}
+            options={{
+                headerShown: false,
+            }}
+        />
     </Stack.Navigator>
-  );
+);
 
 const bizTab = createBottomTabNavigator();
 
@@ -138,6 +139,7 @@ export default function Navigation() {
                 <Stack.Screen name="RegisterBusiness" component={RegisterBusinessScreen} />
                 <Stack.Screen name="Home" component={HomeTabs} />
                 <Stack.Screen name="MyClasses" component={BizTabs} />
+                <Stack.Screen name="ClassDetails" component={ClassDetailsScreen} />
 
             </Stack.Navigator>
         </NavigationContainer>
