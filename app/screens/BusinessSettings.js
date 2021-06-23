@@ -239,7 +239,7 @@ export default function BusinessSettings(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{alignItems: 'center'}}>
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
