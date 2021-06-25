@@ -1,52 +1,36 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
+import { set } from 'react-native-reanimated';
 
-export default function BusinessProfileScreen(props) {
+export default function ClassDetails(props) {
     const[classData, setClassData] = useState(null);
-    const[admin, setAdmin] = useState("");
-    const[adminData, setAdminData] = useState(null);
-    const[date, setDate] = useState(new Object())
+    const[date, setDate] = useState(new Object());
+    const [adminData, setAdminData] = useState(null);
+    const id = props.route.params.id
 
-    const getClass = async() => {
-        await firebase.firestore()
-        .collection('Classes')
-        .doc("3KEWxp1K2yfiDpwz2bfQ")
-        .get()
-        .then((documentSnapshot) => {
-          if (documentSnapshot.exists) {
-            setClassData(documentSnapshot.data())
-            setAdmin(documentSnapshot.data().admin)
-            setDate(documentSnapshot.data().date)
-            console.log(admin)
-            firebase.firestore()
+    const getData = async () => {
+      let query1 = await firebase.firestore()
+                .collection('Classes')
+                .doc(id)
+                .get()
+
+      const classdata = query1.data();
+      const admin = query1.data().admin;
+      const date = query1.data().date;
+      setClassData(classdata);
+      setDate(date);
+
+      let query2 = await firebase.firestore()
                 .collection('Accounts')
                 .doc(admin)
                 .get()
-                .then((doc) => {
-                    setAdminData(doc.data())
-                })
-            console.log(classData);
-            console.log(date)
-            }
-        })
-        .catch((e) => console.log('Errors while retrieving => ', e));
-    }
+      
+      const admindata = query2.data();
+      setAdminData(admindata)
 
-/*    const getAdmin = async () => {
-        await firebase.firestore()
-            .collection('Accounts')
-            .doc(admin)
-            .get()
-            .then((documentSnapshot) => {
-            if (documentSnapshot.exists) {
-                setAdminData(documentSnapshot.data())
-            }
-            console.log(adminData);
-            })
-            .catch((e) => console.log('Errors while retrieving => ', e));
-    } */
+    }
 
     const getDate = (date) => {
         var t = new Date(date.seconds * 1000 + date.nanoseconds/1000000);
@@ -72,7 +56,7 @@ export default function BusinessProfileScreen(props) {
     }
 
     useEffect(() => {
-        getClass();
+        getData();
     }, []);
 
     return(
@@ -108,17 +92,22 @@ export default function BusinessProfileScreen(props) {
                 />
                 <View style={styles.header}>
                         <View style={{width:"80%"}}>
+                            <Text style={styles.subtitle}>{adminData ? adminData.name || adminData.name : 'Class Unavailable'}</Text>
                             <Text style={styles.title}>{classData ? classData.title || classData.title : 'Class'}</Text>
                         </View>
                         <View style={{width:"10%", alignItems:"flex-end"}}>
-                            <AntDesign
-                                name="hearto" color="black" size={25}
-                            />
+                            <TouchableOpacity>
+                              <AntDesign
+                                  name="hearto" color="black" size={25}
+                              />
+                            </TouchableOpacity>
                         </View>
                         <View style={{width:"10%", alignItems:"flex-end"}}>
-                            <AntDesign
-                                name="addusergroup" color="black" size={25}
-                            />
+                            <TouchableOpacity>
+                                <AntDesign
+                                    name="addusergroup" color="black" size={25}
+                                />
+                            </TouchableOpacity>
                         </View>
                 </View>
                 <View style={styles.descriptionContainer}>
@@ -144,6 +133,11 @@ export default function BusinessProfileScreen(props) {
                     <Text style={styles.description}>{getDate(date)}</Text>
                 </View>
             </ScrollView>
+            <View style={styles.footer}>
+              <TouchableOpacity style={styles.bookButton}>
+                <Text>BOOK</Text>
+              </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -180,5 +174,21 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 17,
         fontFamily: 'Poppins-Light',
+    },
+    footer: {
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      height: 70,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 30,
+    },
+    bookButton: {
+      alignItems: "center",
+      backgroundColor: "#B1B2F5",
+      fontFamily: 'Poppins-Medium',
+      padding: 10,
+      paddingHorizontal: 30,
+      borderRadius: 8,
     }
   });

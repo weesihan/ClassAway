@@ -20,6 +20,7 @@ export default function AddClass(props) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [chosenDateTime, setDateTimePicker] = useState("Select date and time");
   const [categories, setCategories] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [items, setItems] = useState([
     { label: 'Lifestyle', value: 'lifestyle' },
     { label: 'Wellness', value: 'wellness' },
@@ -122,7 +123,8 @@ export default function AddClass(props) {
           alert('Sorry, we need camera permissions to make this work!');
         }
       }
-    })();
+    })
+    getUser();
   }, []);
 
   const takePhotoFromCamera = async () => {
@@ -192,6 +194,24 @@ export default function AddClass(props) {
     </View>
   );
 
+  const email = firebase
+    .auth()
+    .currentUser
+    .email;
+
+  const getUser = async() => {
+    const currentUser = await firebase.firestore()
+    .collection('Accounts')
+    .doc(email)
+    .get()
+    .then((documentSnapshot) => {
+      if( documentSnapshot.exists ) {
+        console.log('User Data', documentSnapshot.data());
+        setUserData(documentSnapshot.data());
+      }
+    })
+  }
+
   const addClass = async () => {
     let img = await uploadImage();
 
@@ -207,7 +227,8 @@ export default function AddClass(props) {
         date: date,
         admin: firebase.auth().currentUser.email,
         pic: img,
-        categories: categories
+        categories: categories,
+        location: userData.address
       });
       alert("Class created successfully")
       clearState()

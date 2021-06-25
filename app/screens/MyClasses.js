@@ -23,15 +23,15 @@ export default function MyClasses(props) {
         });
     };
 
-    const cardSelected = () => {
+    const cardSelected = async (id) => {
         console.log("class pressed")
-        props.navigation.navigate("ClassDetails")
+        await props.navigation.navigate("ClassDetails", { id: id })
     }
 
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={cardSelected}>
+                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.id })}>
                     <Card>
                         <Image style={styles.cardImg} source={{ uri: item.pic }} />
                         <View style={styles.cardContent}>
@@ -56,8 +56,10 @@ export default function MyClasses(props) {
             .then((snapshot) => {
                 console.log(tempClasses);
                 snapshot.forEach((doc) => {
+                    let data = doc.data()
+                    data.id = doc.id
                     console.log(doc.data());
-                    tempClasses.push(doc.data());
+                    tempClasses.push(data);
                     console.log(tempClasses)
 
                 });
