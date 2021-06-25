@@ -1,25 +1,62 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { StyleSheet, Text, SafeAreaView, TouchableOpacity, View, ScrollView, RefreshControl } from 'react-native';
 import firebase from '../database/firebase';
 import { Avatar, Title, TouchableRipple } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen(props) {
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const email = firebase.auth().currentUser.email;
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    const wait = timeout => {
+        return new Promise(resolve => {
+          setTimeout(resolve, timeout);
+        });
+    };
+
+    const getUser = async() => {
+        await firebase.firestore()
+        .collection('Accounts')
+        .doc(email)
+        .get()
+        .then((documentSnapshot) => {
+          if (documentSnapshot.exists) {
+            setUserData(documentSnapshot.data())
+          }
+          console.log(firebase.auth().currentUser.photoURL)
+        })
+        .catch((e) => console.log('Errors while retrieving => ', e));
+      }
+
+      useEffect(() => {
+        getUser();
+        props.navigation.addListener("focus", () => setLoading(!loading));
+    }, [props.navigation, loading]);
 
     const logout = () => {
         firebase
         .auth()
         .signOut()
-        .then(() => {navigation.navigate("Splash")})
+        .then(() => {props.navigation.navigate("Splash")})
     }
 
     return (
         <SafeAreaView style={styles.container}>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.userInfo}>
                 <View style={{flexDirection: 'row', marginTop: 15}}>
                     <Avatar.Image 
                     source={{
-                        uri: 'https://api.adorable.io/avatars/80/abott@adorable.png',
+                        uri: firebase.auth().currentUser.photoURL,
                     }}
                     size={80}
                     />
@@ -27,7 +64,7 @@ export default function ProfileScreen({ navigation }) {
                     <Title style={[styles.title, {
                         marginTop:10,
                         marginBottom: 5,
-                    }]}> {firebase.auth().currentUser.displayName} </Title>
+                    }]}> {userData ? userData.name || "name" : ''} </Title>
                     <TouchableOpacity style={styles.button}
                         onPress={logout}
                     >
@@ -43,13 +80,14 @@ export default function ProfileScreen({ navigation }) {
                     <Text style={styles.menuItemText}>Past Classes</Text>
                 </View>
                 </TouchableRipple>
-                <TouchableRipple onPress={() => {}}>
+                <TouchableRipple onPress={() => props.navigation.navigate('UserSettings')}>
                 <View style={styles.menuItem}>
                     <AntDesign name="setting" color="black" size={25}/>
                     <Text style={styles.menuItemText}>Settings</Text>
                 </View>
                 </TouchableRipple>
             </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }

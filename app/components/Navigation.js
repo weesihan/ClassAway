@@ -9,6 +9,7 @@ import HomeScreen from "../screens/HomeScreen.js";
 import SplashScreen from "../screens/SplashScreen.js";
 import MyBookingsScreen from "../screens/MyBookingsScreen.js";
 import ProfileScreen from "../screens/ProfileScreen.js";
+import UserSettings from "../screens/UserSettings.js";
 import BusinessProfileScreen from "../screens/BusinessProfileScreen.js";
 import BusinessSettings from "../screens/BusinessSettings.js";
 import MakeBookingScreen from "../screens/MakeBookingScreen.js";
@@ -19,6 +20,25 @@ import ClassDetailsScreen from '../screens/ClassDetails';
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
+
+const UserProfileStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="UserSettings"
+            component={UserSettings}
+            options={{
+                headerShown: false,
+            }}
+        />
+    </Stack.Navigator>
+);
 
 function HomeTabs() {
     return (
@@ -49,7 +69,7 @@ function HomeTabs() {
             />
             <Tab.Screen
                 name="Profile"
-                component={ProfileScreen}
+                component={UserProfileStack}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
