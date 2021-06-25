@@ -1,124 +1,110 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button, Alert, ActivityIndicator } from 'react-native';
 import firebase from '../database/firebase';
-import { SafeAreaView } from 'react-navigation';
+import DropDownPicker from 'react-native-dropdown-picker';
 
-export default class Signup extends Component {
+export default function Signup(props) {
+  const[display, setDisplay] = useState("");
+  const[email, setEmail] = useState("");
+  const[password, setPassword] = useState("");
+  const[region, setRegion] = useState([]);
+  const[isUser, setUser] = useState(false);
+  const[role, setRole] = useState("Business");
+  const[isLoading, setLoading] = useState(false);
+  const[items, setItems] = useState([
+    { label: 'East', value: 'east' },
+    { label: 'West', value: 'west' },
+    { label: 'North', value: 'north' },
+    { label: 'South', value: 'south' },
+    { label: 'Central', value: 'central' },
+    { label: 'Others', value: 'others' }]);
+  const[open, setOpen] = useState(false);
 
-  constructor() {
-    super();
-    this.state = { 
-      display: '',
-      email: '', 
-      password: '',
-      isUser: false,
-      role: 'Business',
-      isLoading: false
-    }
-  }
-
-  updateInputVal = (val, prop) => {
+/*  updateInputVal = (val, prop) => {
     const state = this.state;
     state[prop] = val;
     this.setState(state);
-  }
+  } */
 
-  toggleFunction = () => {
-    if (this.state.isUser) {
-      this.setState({
-        isUser: false,
-        role: 'Business'
-      })
+  const toggleFunction = () => {
+    if (isUser) {
+      setUser(false)
+      setRole('Business')
     } else {
-      this.setState({
-        isUser: true,
-        role: 'User'
-      })
+      setUser(true)
+      setRole('User')
     }
   }
 
-  registerUser = () => {
-    if (this.state.email === '' && this.state.password === '') {
+  const registerUser = () => {
+    if (email === '' && password === '') {
       Alert.alert('Enter details to sign up!')
     } else {
-      this.setState({
-        isLoading: true,
-      })
+      setLoading(true)
       firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .createUserWithEmailAndPassword(email, password)
       .then((result) => {
         const user = firebase.auth().currentUser
-        user.updateProfile({displayName: this.state.display})
+        user.updateProfile({displayName: display})
         user.updateProfile({photoURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_24787.png&f=1&nofb=1"})
-        const email = this.state.email;
-        /* const uid = firebase.auth().currentUser.uid */
         firebase.firestore().collection("Accounts")
             .doc(email)
             .set({
-                name: this.state.display,
-                email: this.state.email,
-                isUser: this.state.isUser,
+                name: display,
+                email: email,
+                isUser: isUser,
+                region: region,
             })
         console.log('User registered successfully!')
-        this.setState({
-          isLoading: false,
-          display: '',
-          email: '', 
-          password: ''
-        })
-        if (this.state.isUser) {
-          this.props.navigation.navigate('Login')
+        setLoading(false);
+        setDisplay("");
+        setEmail("");
+        setPassword("");
+        if (isUser) {
+          props.navigation.navigate('Login')
         } else {
-          this.props.navigation.navigate('RegisterBusiness', {email: email})
+          props.navigation.navigate('RegisterBusiness', {email: email})
         }
       })
       .catch(error => {this.setState({ errorMessage: error.message })
-      console.log("error", error.message, error.code)
-      switch (error.code)
-          {
-          case "auth/invalid-email":
-            this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
-          Alert.alert("Username/Email is invalid")
-          break;
+        console.log("error", error.message, error.code)
+        switch (error.code)
+            {
+            case "auth/invalid-email":
+              setLoading(false);
+              setDisplay("");
+              setEmail("");
+              setPassword("");
+            Alert.alert("Username/Email is invalid")
+            break;
 
-          case "auth/email-already-in-use":
-            this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
-          Alert.alert("Username/Email is invalid as it already exists")
-          break;
+            case "auth/email-already-in-use":
+              setLoading(false);
+              setEmail("");
+              setPassword("");
+            Alert.alert("Username/Email is invalid as it already exists")
+            break;
 
-          case "auth/weak-password":
-            this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
-          Alert.alert("Password is invalid, requires minimum 6 characters")
-          break;
+            case "auth/weak-password":
+              setLoading(false);
+              setEmail("");
+              setPassword("");
+            Alert.alert("Password is invalid, requires minimum 6 characters")
+            break;
 
-          default:
-             Alert.alert("Invalid user")
-             this.setState({
-              isLoading: false,
-              email: '', 
-              password: ''
-            })
+            default:
+              Alert.alert("Invalid user")
+              setLoading(false);
+              setEmail("");
+              setPassword("");
           }
-      })
+        }
+      )
     }
   }
 
-  render() {
-
-    if (this.state.isLoading) {
+  if (isLoading) {
       return (
         <View style={styles.preloader}>
           <ActivityIndicator size="large" color="#9E9E9E" />
@@ -131,25 +117,45 @@ export default class Signup extends Component {
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
-          value={this.state.display}
-          onChangeText={(val) => this.updateInputVal(val, 'display')}
+          value={display}
+          onChangeText={(val) => setDisplay(val)}
         />
         <TextInput
           style={styles.inputStyle}
           placeholder="Email"
-          value={this.state.email}
-          onChangeText={(val) => this.updateInputVal(val, 'email')}
+          value={email}
+          onChangeText={(val) => setEmail(val)}
         />
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
-          value={this.state.password}
-          onChangeText={(val) => this.updateInputVal(val, 'password')}
+          value={password}
+          onChangeText={(val) => setPassword(val)}
           maxLength={15}
           secureTextEntry={true}
         />
 
-        {this.state.isUser ?
+        <View alignItems="center">
+          <DropDownPicker
+            min={1}
+            placeholder="Select a region"
+            open={open}
+            value={region}
+            items={items}
+            setOpen={setOpen}
+            setValue={setRegion}
+            setItems={setItems}
+            placeholderStyle={{ color: "grey" }}
+            dropDownDirection='TOP'
+            selectedItemLabelStyle={styles.selectedText}
+            listItemLabelStyle={styles.pickerText}
+            onChangeValue={(value) => console.log(value)}
+            containerStyle={styles.pickerMenu}
+            placeholderStyle={styles.pickerText}
+          />
+        </View>
+
+        {isUser ?
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
               style={[styles.buttonLeft, styles.buttonOn]}
@@ -160,7 +166,7 @@ export default class Signup extends Component {
 
             <TouchableOpacity
               style={[styles.buttonRight, styles.buttonOff]}
-              onPress={this.toggleFunction}
+              onPress={toggleFunction}
             >
               <Text style={styles.buttonTextOff}>I'M A BUSINESS</Text>
             </TouchableOpacity>
@@ -169,7 +175,7 @@ export default class Signup extends Component {
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
               style={[styles.buttonLeft, styles.buttonOff]}
-              onPress={this.toggleFunction}
+              onPress={toggleFunction}
             >
               <Text style={styles.buttonTextOff}>I'M A USER</Text>
             </TouchableOpacity>
@@ -184,20 +190,17 @@ export default class Signup extends Component {
         }
 
         <TouchableOpacity style={styles.button}
-          onPress={this.registerUser}>
+          onPress={registerUser}>
           <Text fontFamily='Poppins-Light'>SIGN UP</Text>
         </TouchableOpacity>
 
         <Text
           style={styles.loginText}
-          onPress={() => this.props.navigation.navigate('Login')}>
+          onPress={() => props.navigation.navigate('Login')}>
           Already Registered? Click here to login
         </Text>
-
-
       </View>
     );
-  }
 }
 
 const styles = StyleSheet.create({
@@ -280,5 +283,23 @@ const styles = StyleSheet.create({
   },
   buttonOn: {
     backgroundColor: '#3740FE',
+  },
+  pickerMenu: {
+    width: 300,
+    margin: 10,
+  },
+  selectedText: {
+    color: '#3740FE',
+    fontFamily: 'Poppins-Bold',
+  },
+  pickerText: {
+    color: '#A6A6A6',
+    fontFamily: 'Poppins-Medium',
+  },
+  selectText: {
+    color: 'black',
+    fontFamily: 'Poppins-Medium',
+    fontSize: 16,
+    marginTop: 10,
   },
 });

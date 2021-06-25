@@ -283,7 +283,7 @@ export default function AddClass(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <View lignItems="center" justifyContent="center">
+      <View alignItems="center" justifyContent="center">
         <TextInput
           style={styles.inputStyle}
           placeholder="Class Name"
