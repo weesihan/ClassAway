@@ -36,7 +36,7 @@ export default function MyClasses(props) {
                         <Image style={styles.cardImg} source={{ uri: item.pic }} />
                         <View style={styles.cardContent}>
                             <Text style={styles.titleText}>{item.title}</Text>
-                            <Text style={styles.descText}>{item.description}</Text>
+                            <Text numberOfLines={4} ellipsizeMode={'tail'} style={styles.descText}>{item.description}</Text>
                         </View>
                     </Card>
                 </TouchableOpacity>

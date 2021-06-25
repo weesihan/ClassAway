@@ -180,9 +180,12 @@ export default function UserSettings(props) {
       imgUrl = profilePhoto;
     }
 
-    firebase.auth()
+    const user = firebase.auth()
         .currentUser
-        .updateProfile({photoURL: imgUrl})
+    
+    user.updateProfile({photoURL: imgUrl})
+    user.updateProfile({displayName: userData.name})
+    console.log(user.displayName)
 
     firebase
     .firestore()
