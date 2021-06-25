@@ -5,9 +5,10 @@ import firebase from '../database/firebase';
 import { set } from 'react-native-reanimated';
 
 export default function ClassDetails(props) {
-    const[classData, setClassData] = useState(null);
-    const[date, setDate] = useState(new Object());
+    const [classData, setClassData] = useState(null);
+    const [date, setDate] = useState(new Object());
     const [adminData, setAdminData] = useState(null);
+    const [currentClasses, setClasses] = useState(null);
     const id = props.route.params.id
 
     const getData = async () => {
@@ -30,6 +31,31 @@ export default function ClassDetails(props) {
       const admindata = query2.data();
       setAdminData(admindata)
 
+    }
+
+    const book = async () => {
+        
+        const currentUser = firebase.auth().currentUser.email;
+
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('bookedClasses')
+            .doc(id)
+            .set({pax: 1})
+            .then(() => {
+                Alert.alert('Class has been booked!')
+            })
+        
+        await firebase.firestore()
+            .collection('Classes')
+            .doc(id)
+            .collection('Attendees')
+            .doc(currentUser)
+            .set({pax: 1})
+            .then(() => {
+                console.log('Attendee added')
+            })
     }
 
     const getDate = (date) => {
@@ -134,7 +160,9 @@ export default function ClassDetails(props) {
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-              <TouchableOpacity style={styles.bookButton}>
+              <TouchableOpacity 
+                onPress={book}
+                style={styles.bookButton}>
                 <Text>BOOK</Text>
               </TouchableOpacity>
             </View>
