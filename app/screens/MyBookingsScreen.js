@@ -20,11 +20,6 @@ export default function MyBookings(props) {
         });
     };
 
-    const cardSelected = async (id) => {
-        console.log("class pressed")
-        await props.navigation.navigate("ClassDetails", { id: id })
-    }
-
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">

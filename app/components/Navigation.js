@@ -17,6 +17,7 @@ import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
 import AddClassScreen from "../screens/AddClass.js";
 import ClassDetailsScreen from '../screens/ClassDetails';
+import BizClassDetails from '../screens/BizClassDetails';
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -125,7 +126,7 @@ function BizTabs() {
                 options={{
                     tabBarLabel: 'Add Class',
                     tabBarIcon: ({ color, size }) => (
-                        <AntDesign name="book" color={color} size={size} />
+                        <AntDesign name="pluscircleo" color={color} size={size} />
                     ),
                 }}
             />
@@ -160,6 +161,7 @@ export default function Navigation() {
                 <Stack.Screen name="Home" component={HomeTabs} />
                 <Stack.Screen name="MyClasses" component={BizTabs} />
                 <Stack.Screen name="ClassDetails" component={ClassDetailsScreen} />
+                <Stack.Screen name="BizClassDetails" component={BizClassDetails} />
 
             </Stack.Navigator>
         </NavigationContainer>

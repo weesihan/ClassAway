@@ -23,15 +23,10 @@ export default function MyClasses(props) {
         });
     };
 
-    const cardSelected = async (id) => {
-        console.log("class pressed")
-        await props.navigation.navigate("ClassDetails", { id: id })
-    }
-
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.id })}>
+                <TouchableOpacity onPress={() => props.navigation.navigate("BizClassDetails", { id: item.id })}>
                     <Card>
                         <Image style={styles.cardImg} source={{ uri: item.pic }} />
                         <View style={styles.cardContent}>
