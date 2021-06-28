@@ -31,6 +31,7 @@ export default function MyBookings(props) {
                 <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.id })}>
                     <View style={styles.item}>
                         <Text style={styles.titleText}>{item.title}</Text>
+                        <Text style={styles.descText}>@ {item.admin}</Text>
                         <Text style={styles.descText}>{getDate(item.date)}</Text>
                     </View>
                 </TouchableOpacity>
@@ -62,24 +63,27 @@ export default function MyBookings(props) {
     }
 
     const getData = () => {
+        const currentUser = firebase.auth().currentUser.email
         setFetching(true)
         console.log(isFetching)
         var tempClasses = []
         firebase
             .firestore()
-            .collection('Classes')
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('bookedClasses')
             .get()
             .then((snapshot) => {
                 console.log(tempClasses);
                 snapshot.forEach((doc) => {
                     let data = doc.data()
-                    data.id = doc.id
                     console.log(doc.data());
                     tempClasses.push(data);
                     console.log(tempClasses)
 
                 });
                 setClasses(tempClasses)
+                console.log("after setclass")
                 setFetching(false)
                 console.log(classes)
                 console.log(isFetching)
@@ -87,13 +91,25 @@ export default function MyBookings(props) {
             )
     }
 
+
+    const EmptyListMessage = () => {
+        console.log("empty list element")
+        return (
+            <View style={styles.container}>
+                <Text style={styles.descText}>
+                    No Bookings Found
+                </Text>
+            </View>
+        );
+    };
+
     useEffect(() => { getData() }, []);
 
 
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.classText}>
-                Welcome back {firebase.auth().currentUser.displayName}!
+                My Bookings!
             </Text>
             <FlatList
                 data={classes}
@@ -101,6 +117,7 @@ export default function MyBookings(props) {
                 keyExtractor={(item) => item.title}
                 extraData={classes}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                EmptyListMessage={EmptyListMessage}
             />
         </SafeAreaView>
     );
@@ -124,18 +141,23 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 2,
         width: 275,
-        height: 100,
+        height: 85,
         marginHorizontal: 4,
         marginVertical: 9,
         padding: 6,
     },
     titleText: {
         fontFamily: 'Poppins-Bold',
-        fontSize: 16,
+        fontSize: 18,
+        color: "black",
+    },
+    subtitle: {
+        fontFamily: 'Poppins-Medium',
+        fontSize: 14,
         color: "black",
     },
     descText: {
-        fontFamily: 'Poppins-Light',
+        fontFamily: 'Poppins-Medium',
         fontSize: 14,
         color: "black",
     },
