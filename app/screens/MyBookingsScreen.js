@@ -28,7 +28,7 @@ export default function MyBookings(props) {
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.id })}>
+                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.classid })}>
                     <View style={styles.item}>
                         <Text style={styles.titleText}>{item.title}</Text>
                         <Text style={styles.descText}>@ {item.admin}</Text>
