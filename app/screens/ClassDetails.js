@@ -43,6 +43,18 @@ export default function ClassDetails(props) {
                     setBooked(true)
                 }
             })
+
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('favourites')
+            .doc(id)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    isLiked(true)
+                }
+            })
     }
 
     const favourite = async () => {
