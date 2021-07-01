@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
-import { set } from 'react-native-reanimated';
 
 export default function ClassDetails(props) {
     const [classData, setClassData] = useState(null);
     const [date, setDate] = useState(new Object());
     const [adminData, setAdminData] = useState(null);
-    const [currentClasses, setClasses] = useState(null);
+    const [isBooked, setBooked] = useState(false);
+    const [liked, isLiked] = useState(false);
+    const currentUser = firebase.auth().currentUser.email;
     const id = props.route.params.id
 
     const getData = async () => {
@@ -31,13 +32,63 @@ export default function ClassDetails(props) {
         const admindata = query2.data();
         setAdminData(admindata)
 
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('bookedClasses')
+            .doc(id)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    setBooked(true)
+                }
+            })
+    }
+
+    const favourite = async () => {
+
+        if (!liked) {
+            await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('favourites')
+            .doc(id)
+            .set({
+                classid: id,
+                date: date,
+                admin: adminData.name,
+                title: classData.title,
+                categories: classData.categories,
+                cost: classData.cost,
+                description: classData.description,
+                location: classData.location,
+                pic: classData.pic,
+            })
+            isLiked(true)
+            console.log('Class has been liked')
+        } else {
+            await firebase.firestore()
+                .collection('Accounts')
+                .doc(currentUser)
+                .collection('favourites')
+                .doc(id)
+                .delete()
+                .then(() => {
+                    console.log("Document successfully deleted!");
+                }).catch((error) => {
+                    console.error("Error removing document: ", error);
+                });
+            isLiked(false)
+        }
     }
 
     const book = async () => {
 
-        const currentUser = firebase.auth().currentUser.email;
-
-        await firebase.firestore()
+        if (isBooked) {
+            console.log('Class has been booked')
+            Alert.alert('You have already made a booking for this class!')
+        } else {
+            await firebase.firestore()
             .collection('Accounts')
             .doc(currentUser)
             .collection('bookedClasses')
@@ -53,15 +104,17 @@ export default function ClassDetails(props) {
                 Alert.alert('Class has been booked!')
             })
 
-        await firebase.firestore()
-            .collection('Classes')
-            .doc(id)
-            .collection('Attendees')
-            .doc(currentUser)
-            .set({ pax: 1 })
-            .then(() => {
-                console.log('Attendee added')
-            })
+            await firebase.firestore()
+                .collection('Classes')
+                .doc(id)
+                .collection('Attendees')
+                .doc(currentUser)
+                .set({ pax: 1 })
+                .then(() => {
+                    console.log('Attendee added')
+                })
+        }
+
     }
 
     const getDate = (date) => {
@@ -85,6 +138,23 @@ export default function ClassDetails(props) {
             + ':' + ('0' + t.getMinutes()).slice(-2)
             + ' ' + newformat;
         return formatted
+    }
+
+    const renderElement = () => {
+        if (liked) {
+            return <TouchableOpacity
+                        onPress={favourite}>
+                            <AntDesign
+                                name="heart" color="#6559ff" size={25}
+                            />
+                    </TouchableOpacity>
+        }
+        return <TouchableOpacity
+                onPress={favourite}>
+                    <AntDesign
+                        name="hearto" color="black" size={25}
+                    />
+                </TouchableOpacity>
     }
 
     useEffect(() => {
@@ -128,11 +198,7 @@ export default function ClassDetails(props) {
                         <Text style={styles.title}>{classData ? classData.title || classData.title : 'Class'}</Text>
                     </View>
                     <View style={{ width: "10%", alignItems: "flex-end" }}>
-                        <TouchableOpacity>
-                            <AntDesign
-                                name="hearto" color="black" size={25}
-                            />
-                        </TouchableOpacity>
+                        { renderElement() }
                     </View>
                     <View style={{ width: "10%", alignItems: "flex-end" }}>
                         <TouchableOpacity>
@@ -224,5 +290,5 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingHorizontal: 30,
         borderRadius: 8,
-    }
+    },
 });
