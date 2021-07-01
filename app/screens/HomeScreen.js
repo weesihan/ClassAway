@@ -10,8 +10,10 @@ import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
 export default function HomeScreen(props) {
 
     const [classes, setClasses] = useState([])
+    const [favourites, setFavourites] = useState([])
     const [isFetching, setFetching] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
+
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -46,25 +48,48 @@ export default function HomeScreen(props) {
         )
     }
 
-    const getData = () => {
+    const getData = async () => {
+        const currentUser = firebase.auth().currentUser.email
         setFetching(true)
         console.log(isFetching)
-        var tempClasses = []
-        firebase
+        var faveClasses = []
+        var nearbyClasses = []
+
+        await firebase
             .firestore()
-            .collection('Classes')
+            .collection('Accounts').doc(currentUser)
+            .collection('favourites')
             .get()
             .then((snapshot) => {
-                console.log(tempClasses);
+                console.log(faveClasses);
                 snapshot.forEach((doc) => {
                     let data = doc.data()
                     data.id = doc.id
                     console.log(doc.data());
-                    tempClasses.push(data);
-                    console.log(tempClasses)
+                    faveClasses.push(data);
+                    console.log(faveClasses)
 
                 });
-                setClasses(tempClasses)
+                setFavourites(faveClasses)
+                console.log(classes)
+            }
+            )
+
+        await firebase
+            .firestore()
+            .collection('Classes')
+            .get()
+            .then((snapshot) => {
+                console.log(nearbyClasses);
+                snapshot.forEach((doc) => {
+                    let data = doc.data()
+                    data.id = doc.id
+                    console.log(doc.data());
+                    nearbyClasses.push(data);
+                    console.log(nearbyClasses)
+
+                });
+                setClasses(nearbyClasses)
                 setFetching(false)
                 console.log(classes)
                 console.log(isFetching)
@@ -74,21 +99,39 @@ export default function HomeScreen(props) {
 
     useEffect(() => { getData() }, []);
 
-
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.classText}>
+        <View style={styles.container}>
+            <Text style={styles.welcomeText}>
                 Welcome back {firebase.auth().currentUser.displayName}!
+            </Text>
+            <Text style={styles.classText}>
+                Near You
             </Text>
             <FlatList
                 data={classes}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.title}
+                horizontal={true}
+                ItemSeparatorComponent={() => <View style={{ margin: 4 }} />}
                 extraData={classes}
+                keyExtractor={(item) => item.title}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             />
-        </SafeAreaView>
-    );
+            <Text style={styles.classText}>
+                My Favourites
+            </Text>
+            <FlatList
+                data={favourites}
+                renderItem={renderItem}
+                horizontal={true}
+                ItemSeparatorComponent={() => <View style={{ margin: 4 }} />}
+                extraData={favourites}
+                keyExtractor={(item) => item.title}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            />
+        </View>
+
+    )
+
 }
 
 const styles = StyleSheet.create({
@@ -105,11 +148,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
     },
+    welcomeText: {
+        fontFamily: 'Poppins-Bold',
+        fontSize: 24,
+        color: "black",
+        margin: 5,
+    },
     classText: {
         fontFamily: 'Poppins-Bold',
-        fontSize: 30,
+        fontSize: 24,
         color: "#6559ff",
-        margin: 10,
+        margin: 5,
     },
     titleText: {
         fontFamily: 'Poppins-Bold',
