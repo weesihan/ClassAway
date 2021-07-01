@@ -12,7 +12,7 @@ import ProfileScreen from "../screens/ProfileScreen.js";
 import UserSettings from "../screens/UserSettings.js";
 import BusinessProfileScreen from "../screens/BusinessProfileScreen.js";
 import BusinessSettings from "../screens/BusinessSettings.js";
-import MakeBookingScreen from "../screens/MakeBookingScreen.js";
+import PastClasses from "../screens/PastClasses.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
 import AddClassScreen from "../screens/AddClass.js";
@@ -27,6 +27,13 @@ const UserProfileStack = () => (
         <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="PastClasses"
+            component={PastClasses}
             options={{
                 headerShown: false,
             }}

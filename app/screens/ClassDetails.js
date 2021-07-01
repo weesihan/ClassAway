@@ -9,8 +9,10 @@ export default function ClassDetails(props) {
     const [adminData, setAdminData] = useState(null);
     const [isBooked, setBooked] = useState(false);
     const [liked, isLiked] = useState(false);
+    const [hasPassed, setPassed] = useState(false);
     const currentUser = firebase.auth().currentUser.email;
-    const id = props.route.params.id
+    const id = props.route.params.id;
+    const currentDate = firebase.firestore.Timestamp.now();
 
     const getData = async () => {
         let query1 = await firebase.firestore()
@@ -23,6 +25,9 @@ export default function ClassDetails(props) {
         const date = query1.data().date;
         setClassData(classdata);
         setDate(date);
+        if (date < currentDate) {
+            setPassed(true);
+        }
 
         let query2 = await firebase.firestore()
             .collection('Accounts')
@@ -94,7 +99,11 @@ export default function ClassDetails(props) {
 
     const book = async () => {
 
-        if (isBooked) {
+        if (hasPassed) {
+            console.log('Class is over')
+            Alert.alert('This class is no longer available!')
+        }
+        else if (isBooked) {
             console.log('Class has been booked')
             Alert.alert('You have already made a booking for this class!')
         } else {

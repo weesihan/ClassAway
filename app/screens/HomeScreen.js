@@ -160,11 +160,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     welcomeText: {
-        marginTop: '10%',
         fontFamily: 'Poppins-Bold',
         fontSize: 24,
         color: "black",
-        margin: 5,
+        marginTop: 50,
         marginHorizontal: 15
     },
     classText: {

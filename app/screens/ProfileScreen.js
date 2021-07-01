@@ -74,7 +74,7 @@ export default function ProfileScreen(props) {
                 </View>
             </View>
             <View style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => {}}>
+                <TouchableRipple onPress={() => props.navigation.navigate('PastClasses')}>
                 <View style={styles.menuItem}>
                     <AntDesign name="profile" color="black" size={25}/>
                     <Text style={styles.menuItemText}>Past Classes</Text>
