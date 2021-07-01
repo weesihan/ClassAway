@@ -66,6 +66,17 @@ export default function MyClasses(props) {
             )
     }
 
+    const EmptyListMessage = () => {
+        console.log("empty list element")
+        return (
+            <View style={{ flex:1 }}>
+                <Text style={styles.emptyListText}>
+                    No Classes Found
+                </Text>
+            </View>
+        );
+    };
+
     useEffect(() => { getData() }, []);
 
 
@@ -80,6 +91,7 @@ export default function MyClasses(props) {
                 keyExtractor={(item) => item.title}
                 extraData={classes}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                ListEmptyComponent={EmptyListMessage()}
             />
         </SafeAreaView>
 
@@ -130,4 +142,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
     },
+    emptyListText: {
+        textAlign: 'center',
+        margin: '30%',
+        fontFamily: 'Poppins-Medium',
+        fontSize: 15,
+    }
 });

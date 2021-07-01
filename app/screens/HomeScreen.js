@@ -27,11 +27,6 @@ export default function HomeScreen(props) {
         });
     };
 
-    const cardSelected = async (id) => {
-        console.log("class pressed")
-        await props.navigation.navigate("ClassDetails", { id: id })
-    }
-
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
@@ -99,11 +94,24 @@ export default function HomeScreen(props) {
 
     useEffect(() => { getData() }, []);
 
+    const EmptyListMessage = () => {
+        console.log("empty list element")
+        return (
+            <View>
+                <Text style={styles.emptyListText}>
+                    No Classes Found. Pull down to refresh.
+                </Text>
+            </View>
+        );
+    };
+
     return (
-        <View style={styles.container}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
             <Text style={styles.welcomeText}>
                 Welcome back {firebase.auth().currentUser.displayName}!
             </Text>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View style={styles.container}>
             <Text style={styles.classText}>
                 Near You
             </Text>
@@ -114,7 +122,7 @@ export default function HomeScreen(props) {
                 ItemSeparatorComponent={() => <View style={{ margin: 4 }} />}
                 extraData={classes}
                 keyExtractor={(item) => item.title}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                ListEmptyComponent={EmptyListMessage()}
             />
             <Text style={styles.classText}>
                 My Favourites
@@ -126,10 +134,11 @@ export default function HomeScreen(props) {
                 ItemSeparatorComponent={() => <View style={{ margin: 4 }} />}
                 extraData={favourites}
                 keyExtractor={(item) => item.title}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                ListEmptyComponent={EmptyListMessage()}
             />
         </View>
-
+        </ScrollView>
+    </View>
     )
 
 }
@@ -140,6 +149,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginHorizontal: 10
     },
     containerScroll: {
         flex: 1,
@@ -149,10 +160,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     welcomeText: {
+        marginTop: '10%',
         fontFamily: 'Poppins-Bold',
         fontSize: 24,
         color: "black",
         margin: 5,
+        marginHorizontal: 15
     },
     classText: {
         fontFamily: 'Poppins-Bold',
@@ -188,5 +201,11 @@ const styles = StyleSheet.create({
         width: 300,
         height: 150,
     },
+    emptyListText: {
+        fontFamily: 'Poppins-Medium',
+        marginTop: 10,
+        fontSize: 15,
+        textAlign: 'center'
+    }
 });
 

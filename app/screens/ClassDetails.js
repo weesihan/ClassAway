@@ -87,9 +87,7 @@ export default function ClassDetails(props) {
                 .delete()
                 .then(() => {
                     console.log("Document successfully deleted!");
-                }).catch((error) => {
-                    console.error("Error removing document: ", error);
-                });
+                })
             isLiked(false)
         }
     }

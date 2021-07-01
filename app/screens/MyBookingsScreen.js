@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, RefreshControl, Alert } from 'react-native';
 import firebase from '../database/firebase';
-import { set } from 'react-native-reanimated';
+import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function MyBookings(props) {
     const [classes, setClasses] = useState([])
     const [isFetching, setFetching] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
+    const currentUser = firebase.auth().currentUser.email;
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         getData();
@@ -20,12 +21,53 @@ export default function MyBookings(props) {
         });
     };
 
+    const cancelClass = (id) => {
+        firebase.firestore()
+        .collection('Accounts')
+        .doc(currentUser)
+        .collection('bookedClasses')
+        .doc(id)
+        .delete()
+        .then(() => {
+            console.log(id)
+            console.log("Document successfully deleted!");
+        })
+    }
+
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
                 <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.classid })}>
                     <View style={styles.item}>
-                        <Text style={styles.titleText}>{item.title}</Text>
+                        <View style={{flexDirection: "row"}}>
+                            <View style={{ width: "80%" }}>
+                                <Text style={styles.titleText}>{item.title}</Text>
+                            </View>
+                            <View style={{ width: "20%", alignItems: "flex-end" }}>
+                                <TouchableOpacity
+                                    onPress={() => Alert.alert(
+                                        "Cancel Class",
+                                        "Are you sure you want to cancel this class?",
+                                        [
+                                        {
+                                            text: "Cancel",
+                                            onPress: () => console.log("Cancel Pressed"),
+                                            style: "cancel"
+                                        },
+                                        { text: "OK", onPress: () => { 
+                                            cancelClass(item.classid)
+                                            console.log("OK Pressed")}
+                                        }
+                                        ],
+                                        { cancelable: false }
+                                    )
+                                    }>
+                                    <AntDesign
+                                        name="close" color="black" size={25}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                         <Text style={styles.descText}>@ {item.admin}</Text>
                         <Text style={styles.descText}>{getDate(item.date)}</Text>
                     </View>
@@ -90,9 +132,10 @@ export default function MyBookings(props) {
     const EmptyListMessage = () => {
         console.log("empty list element")
         return (
-            <View style={styles.container}>
-                <Text style={styles.descText}>
-                    No Bookings Found
+            <View>
+                <Text style={styles.emptyListText}>
+                    No Bookings Found {"\n"}
+                    Pull down to refresh
                 </Text>
             </View>
         );
@@ -112,7 +155,7 @@ export default function MyBookings(props) {
                 keyExtractor={(item) => item.title}
                 extraData={classes}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                EmptyListMessage={EmptyListMessage}
+                ListEmptyComponent={EmptyListMessage()}
             />
         </SafeAreaView>
     );
@@ -160,5 +203,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         fontSize: 30,
         color: "black",
+        marginTop: '8%'
     },
+    emptyListText: {
+        textAlign: 'center',
+        marginTop: 30,
+        fontFamily: 'Poppins-Medium',
+        fontSize: 15,
+    }
 });
