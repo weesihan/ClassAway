@@ -1,14 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Alert, Image, ScrollView, RefreshControl } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
+import { set } from 'react-native-reanimated';
 
 export default function BizClassDetails(props) {
     const [classData, setClassData] = useState(null);
     const [date, setDate] = useState(new Object());
     const [adminData, setAdminData] = useState(null);
+    const [attendees, setAttendees] = useState([])
     const [currentClasses, setClasses] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const id = props.route.params.id
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getData();
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
 
     const getData = async () => {
         let query1 = await firebase.firestore()
@@ -29,6 +44,20 @@ export default function BizClassDetails(props) {
 
         const admindata = query2.data();
         setAdminData(admindata)
+
+        var tempAttendees = []
+        await firebase.firestore()
+            .collection('Classes')
+            .doc(id)
+            .collection('Attendees')
+            .get()
+            .then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    tempAttendees.push(doc.id)
+                });
+                console.log(tempAttendees);
+                setAttendees(tempAttendees)
+            })
 
     }
 
@@ -53,6 +82,14 @@ export default function BizClassDetails(props) {
             + ':' + ('0' + t.getMinutes()).slice(-2)
             + ' ' + newformat;
         return formatted
+    }
+
+    const renderItem = ({ item }) => {
+        return (
+            <Text style={styles.description}>
+                {item}
+            </Text>
+        )
     }
 
     useEffect(() => {
@@ -117,6 +154,16 @@ export default function BizClassDetails(props) {
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.subtitle}>Date</Text>
                     <Text style={styles.description}>{getDate(date)}</Text>
+                </View>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.subtitle}>Attendees</Text>
+                    <FlatList
+                        data={attendees}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item}
+                        extraData={attendees}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    />
                 </View>
             </ScrollView>
         </View>
