@@ -7,7 +7,6 @@ import { AntDesign } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { grey } from 'ansi-colors';
 
 export default function AddClass(props) {
   const [className, setClassName] = useState("");
@@ -228,7 +227,8 @@ export default function AddClass(props) {
         admin: firebase.auth().currentUser.email,
         pic: img,
         categories: categories,
-        location: userData.address
+        location: userData.address,
+        region: userData.region
       });
       alert("Class created successfully")
       clearState()

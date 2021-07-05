@@ -30,8 +30,17 @@ export default function MyBookings(props) {
         .doc(id)
         .delete()
         .then(() => {
-            console.log(id)
-            console.log("Document successfully deleted!");
+            console.log(id, "Document successfully deleted!")
+        })
+
+        firebase.firestore()
+        .collection('Classes')
+        .doc(id)
+        .collection('Attendees')
+        .doc(currentUser)
+        .delete()
+        .then(() => {
+            console.log(currentUser, "Document successfully deleted!")
         })
     }
 

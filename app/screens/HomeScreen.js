@@ -2,16 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, RefreshControl } from 'react-native';
 import firebase from '../database/firebase';
 import Card from '../components/Card.js'
-import { set } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
 
 
 export default function HomeScreen(props) {
 
-    const [classes, setClasses] = useState([])
-    const [favourites, setFavourites] = useState([])
-    const [isFetching, setFetching] = useState(true)
+    const [classes, setClasses] = useState([]);
+    const [favourites, setFavourites] = useState([]);
+    const [isFetching, setFetching] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
 
@@ -42,6 +41,19 @@ export default function HomeScreen(props) {
             </View>
         )
     }
+    const email = firebase
+        .auth()
+        .currentUser
+        .email;
+
+    const getUserRegion = () => {
+        let query = firebase.firestore()
+        .collection('Accounts')
+        .doc(email)
+        .get()
+
+        const userData = query.data()
+    }
 
     const getData = async () => {
         const currentUser = firebase.auth().currentUser.email
@@ -70,9 +82,17 @@ export default function HomeScreen(props) {
             }
             )
 
+        let query = await firebase.firestore()
+            .collection('Accounts')
+            .doc(email)
+            .get()
+    
+        const userData = query.data()
+
         await firebase
             .firestore()
             .collection('Classes')
+            .where("region", "==", userData.region)
             .get()
             .then((snapshot) => {
                 console.log(nearbyClasses);

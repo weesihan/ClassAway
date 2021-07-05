@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
+import Counter from "react-native-counters";
 
 export default function ClassDetails(props) {
     const [classData, setClassData] = useState(null);
@@ -10,6 +11,7 @@ export default function ClassDetails(props) {
     const [isBooked, setBooked] = useState(false);
     const [liked, isLiked] = useState(false);
     const [hasPassed, setPassed] = useState(false);
+    const [pax, setPax] = useState(1);
     const currentUser = firebase.auth().currentUser.email;
     const id = props.route.params.id;
     const currentDate = firebase.firestore.Timestamp.now();
@@ -113,14 +115,14 @@ export default function ClassDetails(props) {
             .collection('bookedClasses')
             .doc(id)
             .set({
-                pax: 1,
+                pax: pax,
                 classid: id,
                 date: date,
                 admin: adminData.name,
                 title: classData.title
             })
             .then(() => {
-                Alert.alert('Class has been booked!')
+                Alert.alert('Class has been booked successfully!')
             })
 
             await firebase.firestore()
@@ -128,12 +130,16 @@ export default function ClassDetails(props) {
                 .doc(id)
                 .collection('Attendees')
                 .doc(currentUser)
-                .set({ pax: 1 })
+                .set({ pax: pax })
                 .then(() => {
                     console.log('Attendee added')
                 })
         }
 
+    }
+    const counter = (number) => {
+        setPax(number)
+        console.log(number)
     }
 
     const getDate = (date) => {
@@ -251,6 +257,12 @@ export default function ClassDetails(props) {
                 </View>
             </ScrollView>
             <View style={styles.footer}>
+                <Text style={styles.description}>Pax</Text>
+                <Counter
+                    buttonStyle={{borderColor: '#333', borderWidth: 1 }}
+                    buttonTextStyle={{color: '#333',}}
+                    countTextStyle={{color: '#333',}}
+                    start={1} min={1} max={20} onChange={(len) => counter(len)}/>
                 <TouchableOpacity
                     onPress={book}
                     style={styles.bookButton}>
