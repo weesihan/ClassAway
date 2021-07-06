@@ -22,64 +22,29 @@ export default function MyBookings(props) {
         });
     };
 
-    const cancelClass = (id) => {
-        firebase.firestore()
-        .collection('Accounts')
-        .doc(currentUser)
-        .collection('bookedClasses')
-        .doc(id)
-        .delete()
-        .then(() => {
-            console.log(id, "Document successfully deleted!")
-        })
-
-        firebase.firestore()
-        .collection('Classes')
-        .doc(id)
-        .collection('Attendees')
-        .doc(currentUser)
-        .delete()
-        .then(() => {
-            console.log(currentUser, "Document successfully deleted!")
-        })
-    }
-
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.classid })}>
+                <TouchableOpacity onPress={() => props.navigation.navigate("BookedClassDetails", { id: item.classid })}>
                     <View style={styles.item}>
                         <View style={{flexDirection: "row"}}>
                             <View style={{ width: "80%" }}>
                                 <Text style={styles.titleText}>{item.title}</Text>
                             </View>
                             <View style={{ width: "20%", alignItems: "flex-end" }}>
-                                <TouchableOpacity
-                                    onPress={() => Alert.alert(
-                                        "Cancel Class",
-                                        "Are you sure you want to cancel this class?",
-                                        [
-                                        {
-                                            text: "Cancel",
-                                            onPress: () => console.log("Cancel Pressed"),
-                                            style: "cancel"
-                                        },
-                                        { text: "OK", onPress: () => { 
-                                            cancelClass(item.classid)
-                                            console.log("OK Pressed")}
-                                        }
-                                        ],
-                                        { cancelable: false }
-                                    )
-                                    }>
-                                    <AntDesign
-                                        name="close" color="black" size={25}
-                                    />
-                                </TouchableOpacity>
+                                
                             </View>
                         </View>
                         <Text style={styles.descText}>@ {item.admin}</Text>
-                        <Text style={styles.descText}>{getDate(item.date)}</Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <View style={{ width: "90%" }}>
+                                <Text style={styles.descText}>{getDate(item.date)}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row', width: "10%"}}>
+                                <AntDesign name="user" color="black" size={18}/>
+                                <Text style={styles.descText}> {item.pax} </Text>
+                            </View>
+                        </View>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -193,9 +158,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 2,
         width: '96%',
-        height: 85,
+        height: 80,
         marginHorizontal: 4,
-        marginVertical: 9,
+        marginVertical: 10,
         padding: 6,
     },
     titleText: {

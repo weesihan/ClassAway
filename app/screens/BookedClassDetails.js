@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
-import Counter from "react-native-counters";
 
-export default function ClassDetails(props) {
+export default function BookedClassDetails(props) {
     const [classData, setClassData] = useState(null);
     const [date, setDate] = useState(new Object());
     const [adminData, setAdminData] = useState(null);
-    const [isBooked, setBooked] = useState(false);
     const [liked, isLiked] = useState(false);
-    const [hasPassed, setPassed] = useState(false);
-    const [pax, setPax] = useState(1);
     const currentUser = firebase.auth().currentUser.email;
     const id = props.route.params.id;
     const currentDate = firebase.firestore.Timestamp.now();
@@ -42,18 +38,6 @@ export default function ClassDetails(props) {
         await firebase.firestore()
             .collection('Accounts')
             .doc(currentUser)
-            .collection('bookedClasses')
-            .doc(id)
-            .get()
-            .then((doc) => {
-                if (doc.exists) {
-                    setBooked(true)
-                }
-            })
-
-        await firebase.firestore()
-            .collection('Accounts')
-            .doc(currentUser)
             .collection('favourites')
             .doc(id)
             .get()
@@ -62,6 +46,29 @@ export default function ClassDetails(props) {
                     isLiked(true)
                 }
             })
+    }
+
+    const cancelClass = () => {
+        firebase.firestore()
+        .collection('Accounts')
+        .doc(currentUser)
+        .collection('bookedClasses')
+        .doc(id)
+        .delete()
+        .then(() => {
+            console.log(id, "Document successfully deleted!")
+        })
+
+        firebase.firestore()
+        .collection('Classes')
+        .doc(id)
+        .collection('Attendees')
+        .doc(currentUser)
+        .delete()
+        .then(() => {
+            console.log(currentUser, "Document successfully deleted!");
+            props.navigation.goBack()
+        })
     }
 
     const favourite = async () => {
@@ -97,50 +104,6 @@ export default function ClassDetails(props) {
                 })
             isLiked(false)
         }
-    }
-
-    const book = async () => {
-
-        if (hasPassed) {
-            console.log('Class is over')
-            Alert.alert('This class is no longer available!')
-        }
-        else if (isBooked) {
-            console.log('Class has been booked before')
-            Alert.alert('You have already made a booking for this class!')
-        } else {
-            await firebase.firestore()
-            .collection('Accounts')
-            .doc(currentUser)
-            .collection('bookedClasses')
-            .doc(id)
-            .set({
-                pax: pax,
-                classid: id,
-                date: date,
-                admin: adminData.name,
-                title: classData.title
-            })
-            .then(() => {
-                Alert.alert('Class has been booked successfully!')
-            })
-
-            await firebase.firestore()
-                .collection('Classes')
-                .doc(id)
-                .collection('Attendees')
-                .doc(currentUser)
-                .set({ pax: pax })
-                .then(() => {
-                    console.log('Attendee added')
-                    setBooked(true);
-                })
-        }
-
-    }
-    const counter = (number) => {
-        setPax(number)
-        console.log(number)
     }
 
     const getDate = (date) => {
@@ -258,16 +221,25 @@ export default function ClassDetails(props) {
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <Text style={styles.description}>Pax</Text>
-                <Counter
-                    buttonStyle={{borderColor: '#333', borderWidth: 1 }}
-                    buttonTextStyle={{color: '#333',}}
-                    countTextStyle={{color: '#333',}}
-                    start={1} min={1} max={20} onChange={(len) => counter(len)}/>
-                <TouchableOpacity
-                    onPress={book}
-                    style={styles.bookButton}>
-                    <Text>BOOK</Text>
+                <TouchableOpacity style={styles.bookButton}
+                    onPress={() => Alert.alert(
+                        "Cancel Class",
+                        "Are you sure you want to cancel this class?",
+                        [
+                            {
+                                text: "Cancel",
+                                onPress: () => console.log("Cancel Pressed"),
+                                style: "cancel"
+                            },
+                            { text: "OK", onPress: () => { 
+                                cancelClass()
+                                console.log("OK Pressed")}
+                            }
+                        ],
+                            { cancelable: false }
+                        )
+                }>
+                    <Text>CANCEL</Text>
                 </TouchableOpacity>
             </View>
         </View>
