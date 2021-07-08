@@ -1,43 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { TouchableOpacity, Alert, Modal, StyleSheet, Text, View, TextInput } from "react-native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Alert, Modal, StyleSheet, Text, View, TextInput, FlatList, RefreshControl, Image, Pressable, SafeAreaView } from "react-native";
+import firebase from '../database/firebase';
+import Card from '../components/Card.js'
 import DropDownPicker from 'react-native-dropdown-picker';
-//import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AntDesign } from '@expo/vector-icons';
+import { refresh } from 'react-native-app-auth';
 
 export default function FilterScreen(props) {
-    //const [searchQuery, setSearchQuery] = useState('');
-    //const [searchResults, setSearchResults] = useState([])
-    //const onChangeSearch = query => setSearchQuery(query);
-    /*
-   const getSearchResults = () => {
-       var resutls = []
-       firebase
-           .firestore()
-           .collection('Classes').where('title', '==', searchQuery)
-           .get()
-           .then((snapshot) => {
-               console.log(results);
-               snapshot.forEach((doc) => {
-                   let data = doc.data()
-                   data.id = doc.id
-                   console.log(doc.data());
-                   results.push(data);
-                   console.log(results)
-
-               });
-               setSearchResults(results)
-               console.log(resutls)
-           }
-           )
-   }
-   */
-    /*
-    <Searchbar
-                placeholder="Search classes"
-                onChangeText={onChangeSearch}
-                value={searchQuery}
-            />
-    */
-
+    const [classes, setClasses] = useState([])
+    const [isFetching, setFetching] = useState(true)
+    const [refreshing, setRefreshing] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [region, setRegion] = useState(null)
     const [minPrice, setMinPrice] = useState("")
@@ -111,9 +84,127 @@ export default function FilterScreen(props) {
         
         */
 
+    const EmptyListMessage = () => {
+        console.log("empty list element")
+        return (
+            <View>
+                <Text style={styles.emptyListText}>
+                    No Classes Found.
+                </Text>
+            </View>
+        );
+    };
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getData();
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
+
+    const renderItem = ({ item }) => {
+        return (
+            <View alignItems="center" justifyContent="center">
+                <TouchableOpacity onPress={() => props.navigation.navigate("ClassDetails", { id: item.id })}>
+                    <Card>
+                        <Image style={styles.cardImg} source={{ uri: item.pic }} />
+                        <View style={styles.cardContent}>
+                            <Text style={styles.titleText}>{item.title}</Text>
+                            <Text numberOfLines={4} ellipsizeMode={'tail'} style={styles.descText}>{item.description}</Text>
+                        </View>
+                    </Card>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    const getData = () => {
+        setFetching(true)
+        console.log(isFetching)
+        var tempClasses = []
+        firebase
+            .firestore()
+            .collection('Classes')
+            .get()
+            .then((snapshot) => {
+                console.log(tempClasses);
+                snapshot.forEach((doc) => {
+                    let data = doc.data()
+                    data.id = doc.id
+                    console.log(doc.data());
+                    tempClasses.push(data);
+                    console.log(tempClasses)
+
+                });
+                setClasses(tempClasses)
+                setFetching(false)
+                console.log(classes)
+                console.log(isFetching)
+            }
+            )
+    }
+
+    const getResults = () => {
+        setFetching(true)
+        console.log(isFetching)
+        var tempClasses = []
+        firebase
+            .firestore()
+            .collection('Classes')
+            .where('categories', 'array-contains-any', categories)
+            .where('region', '==', region)
+            .get()
+            .then((snapshot) => {
+                console.log(tempClasses);
+                snapshot.forEach((doc) => {
+                    let data = doc.data()
+                    data.id = doc.id
+                    console.log(doc.data());
+                    tempClasses.push(data);
+                    console.log(tempClasses)
+
+                });
+                setClasses(tempClasses)
+                setFetching(false)
+                console.log(classes)
+                console.log(isFetching)
+            }
+            )
+    }
+
+    useEffect(() => { getData() }, []);
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.welcomeText}>Find classes</Text>
+        <SafeAreaView style={styles.container}>
+
+
+            <View style={styles.pageHeader}>
+                <View style={{ width: "80%" }}>
+                    <Text style={styles.welcomeText}>Find classes</Text>
+                </View>
+                <TouchableOpacity
+                    onPress={() => {
+                        setModalVisible(true);
+                        clearState()
+                    }}>
+                    <AntDesign
+                        name="filter" color='black' size={30}
+                    />
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                data={classes}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.title}
+                extraData={classes}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                ListEmptyComponent={EmptyListMessage()}
+            />
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -183,33 +274,23 @@ export default function FilterScreen(props) {
                         </View>
                         <Text style={styles.selectText}>Date</Text>
 
-                        <TouchableOpacity
+                        <Pressable
                             onPress={() => {
                                 setModalVisible(!modalVisible)
                                 console.log(region)
                                 console.log(categories)
                                 console.log(minPrice)
                                 console.log(maxPrice)
-                                props.navigation.navigate("SearchResults", {
-                                    region: region,
-                                    categories: categories,
-                                    minPrice: minPrice,
-                                    maxPrice: maxPrice
-                                })
-                                clearState()
+                                getResults()
                             }}
                             style={styles.buttonClose}>
                             <Text>FIND CLASSES</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
-            <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.buttonOpen}>
-                <Text>Filter</Text>
-            </TouchableOpacity>
-        </View>
+
+        </SafeAreaView>
     )
 }
 
@@ -219,6 +300,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    pageHeader: {
+        backgroundColor: 'white',
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: '2%'
     },
     containerScroll: {
         flex: 1,
@@ -231,7 +319,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         fontSize: 24,
         color: "black",
-        margin: 5,
     },
     centeredView: {
         flex: 1,
@@ -334,5 +421,29 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: 40,
         height: 45,
+    },
+    titleText: {
+        fontFamily: 'Poppins-Bold',
+        fontSize: 16,
+        color: "black",
+    },
+    descText: {
+        fontFamily: 'Poppins-Light',
+        fontSize: 14,
+        color: "black",
+    },
+    cardImg: {
+        width: 275,
+        height: 150,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+    },
+    image: {
+        width: 300,
+        height: 150,
+    },
+    cardContent: {
+        marginHorizontal: 10,
+        marginVertical: 10,
     },
 });

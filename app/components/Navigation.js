@@ -193,7 +193,6 @@ export default function Navigation() {
                 <Stack.Screen name="BizClassDetails" component={BizClassDetails} />
                 <Stack.Screen name="BookedClassDetails" component={BookedClassDetails} />
                 <Stack.Screen name="PastClassDetails" component={PastClassDetails} />
-                <Stack.Screen name="SearchResults" component={SearchResults} />
 
             </Stack.Navigator>
         </NavigationContainer>
