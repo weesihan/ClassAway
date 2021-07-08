@@ -21,7 +21,6 @@ import BizClassDetails from '../screens/BizClassDetails.js';
 import BookedClassDetails from '../screens/BookedClassDetails.js';
 import PastClassDetails from '../screens/PastClassDetails.js';
 import BizPastClasses from '../screens/BizPastClasses.js'
-import SearchResults from '../screens/SearchResults';
 import FilterScreen from '../screens/FilterScreen';
 import { AntDesign } from '@expo/vector-icons';
 
