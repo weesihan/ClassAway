@@ -18,9 +18,11 @@ import BizHomeScreen from "../screens/MyClasses.js";
 import AddClassScreen from "../screens/AddClass.js";
 import ClassDetailsScreen from '../screens/ClassDetails.js';
 import BizClassDetails from '../screens/BizClassDetails.js';
-import BookedClassDetails from  '../screens/BookedClassDetails.js';
+import BookedClassDetails from '../screens/BookedClassDetails.js';
 import PastClassDetails from '../screens/PastClassDetails.js';
 import BizPastClasses from '../screens/BizPastClasses.js'
+import SearchResults from '../screens/SearchResults';
+import FilterScreen from '../screens/FilterScreen';
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -65,6 +67,16 @@ function HomeTabs() {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color, size }) => (
                         <AntDesign name="home" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Filter"
+                component={FilterScreen}
+                options={{
+                    tabBarLabel: 'Filter',
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="filter" color={color} size={size} />
                     ),
                 }}
             />
@@ -181,6 +193,7 @@ export default function Navigation() {
                 <Stack.Screen name="BizClassDetails" component={BizClassDetails} />
                 <Stack.Screen name="BookedClassDetails" component={BookedClassDetails} />
                 <Stack.Screen name="PastClassDetails" component={PastClassDetails} />
+                <Stack.Screen name="SearchResults" component={SearchResults} />
 
             </Stack.Navigator>
         </NavigationContainer>
