@@ -124,7 +124,7 @@ export default function Signup(props) {
           style={styles.inputStyle}
           placeholder="Email"
           value={email}
-          onChangeText={(val) => setEmail(val)}
+          onChangeText={(val) => setEmail(val.toLowerCase())}
         />
         <TextInput
           style={styles.inputStyle}

@@ -94,7 +94,7 @@ export default class Login extends Component {
           style={styles.inputStyle}
           placeholder="Email"
           value={this.state.email}
-          onChangeText={(val) => this.updateInputVal(val, 'email')}
+          onChangeText={(val) => this.updateInputVal(val.toLowerCase(), 'email')}
         />
         <TextInput
           style={styles.inputStyle}
