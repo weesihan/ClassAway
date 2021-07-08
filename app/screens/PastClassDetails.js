@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, ScrollView, Modal } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
-import StarRating from 'react-native-star-rating';
-import { set } from 'react-native-reanimated';
+import { AirbnbRating } from 'react-native-ratings';
 
 export default function PastClassDetails(props) {
     const [classData, setClassData] = useState(null);
@@ -274,13 +273,13 @@ export default function PastClassDetails(props) {
                 <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalText}>Leave a rating for this class!</Text>
-                    <StarRating
-                        disabled={false}
-                        maxStars={5}
-                        starSize={30}
-                        starStyle={{color: 'gold'}}
-                        rating={stars}
-                        selectedStar={(rating) => {
+                    <AirbnbRating
+                        showRating={false}
+                        isDisabled={false}
+                        count={5}
+                        size={25}
+                        selectedColor='gold'
+                        onFinishRating={(rating) => {
                             starRating(rating)}}
                     />
                     <View style={{flexDirection: 'row'}}>
@@ -379,8 +378,8 @@ const styles = StyleSheet.create({
         marginTop: 22
     },
     modalText: {
-        marginBottom: 10,
         textAlign: "center",
+        marginBottom: 10,
         fontFamily: 'Poppins-Medium',
     },
     bookButton: {
