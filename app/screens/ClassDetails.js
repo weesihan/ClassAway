@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Image, ScrollView, Share } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
 import Counter from "react-native-counters";
@@ -155,6 +155,28 @@ export default function ClassDetails(props) {
         console.log(number)
     }
 
+    const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message:
+              'Join me in this class!',
+            url: 'https://github.com/weesihan/ClassAway',
+            title: 'ClassAway'
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
     const getDate = (date) => {
         var t = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
         var hours = t.getHours();
@@ -231,7 +253,7 @@ export default function ClassDetails(props) {
                         { renderElement() }
                     </View>
                     <View style={{ width: "10%", alignItems: "flex-end" }}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => onShare()}>
                             <AntDesign
                                 name="addusergroup" color="black" size={25}
                             />
