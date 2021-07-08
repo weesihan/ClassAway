@@ -89,10 +89,10 @@ export default function BusinessProfileScreen(props) {
                 </View>
             </View>
             <View style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => {}}>
+                <TouchableRipple onPress={() => {props.navigation.navigate('BizPastClasses')}}>
                 <View style={styles.menuItem}>
                     <AntDesign name="profile" color="black" size={25}/>
-                    <Text style={styles.menuItemText}>All Classes</Text>
+                    <Text style={styles.menuItemText}>Past Classes</Text>
                 </View>
                 </TouchableRipple>
                 <TouchableRipple onPress={() => {props.navigation.navigate('BusinessSettings')}}>

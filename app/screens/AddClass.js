@@ -228,7 +228,7 @@ export default function AddClass(props) {
         pic: img,
         categories: categories,
         location: userData.address,
-        region: userData.region
+        region: userData.region,
       });
       alert("Class created successfully")
       clearState()

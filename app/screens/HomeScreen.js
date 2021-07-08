@@ -106,7 +106,6 @@ export default function HomeScreen(props) {
                 });
                 setClasses(nearbyClasses)
                 setFetching(false)
-                console.log(classes)
                 console.log(isFetching)
             }
             )

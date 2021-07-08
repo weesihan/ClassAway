@@ -16,9 +16,11 @@ import PastClasses from "../screens/PastClasses.js";
 import RegisterBusinessScreen from "../screens/RegisterBusinessScreen.js";
 import BizHomeScreen from "../screens/MyClasses.js";
 import AddClassScreen from "../screens/AddClass.js";
-import ClassDetailsScreen from '../screens/ClassDetails';
-import BizClassDetails from '../screens/BizClassDetails';
-import BookedClassDetails from  '../screens/BookedClassDetails';
+import ClassDetailsScreen from '../screens/ClassDetails.js';
+import BizClassDetails from '../screens/BizClassDetails.js';
+import BookedClassDetails from  '../screens/BookedClassDetails.js';
+import PastClassDetails from '../screens/PastClassDetails.js';
+import BizPastClasses from '../screens/BizPastClasses.js'
 import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -100,6 +102,13 @@ const BizProfileStack = () => (
             }}
         />
         <Stack.Screen
+            name="BizPastClasses"
+            component={BizPastClasses}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
             name="BusinessSettings"
             component={BusinessSettings}
             options={{
@@ -171,6 +180,7 @@ export default function Navigation() {
                 <Stack.Screen name="ClassDetails" component={ClassDetailsScreen} />
                 <Stack.Screen name="BizClassDetails" component={BizClassDetails} />
                 <Stack.Screen name="BookedClassDetails" component={BookedClassDetails} />
+                <Stack.Screen name="PastClassDetails" component={PastClassDetails} />
 
             </Stack.Navigator>
         </NavigationContainer>

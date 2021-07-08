@@ -201,6 +201,22 @@ export default function BusinessSettings(props) {
         renderHeader={renderHeader}
         initialSnap={1}
       />
+      <View style={{
+          flexDirection: "row",
+          width: "93%",
+          marginTop: 5
+        }}>
+            <TouchableOpacity
+                onPress={() => props.navigation.goBack()}
+                style={{
+                  width: "100%"
+                }}
+            >
+              <AntDesign
+                  name="arrowleft" color="black" size={25}
+              />
+            </TouchableOpacity>
+      </View>
       <Text style={styles.title}>Edit Profile</Text>
       <View style={{ alignItems: 'center', padding: 5 }}>
         <TouchableOpacity onPress={() => bs.current.snapTo(0)}>

@@ -7,6 +7,8 @@ import Counter from "react-native-counters";
 export default function ClassDetails(props) {
     const [classData, setClassData] = useState(null);
     const [date, setDate] = useState(new Object());
+    const [numRatings, setNumRatings] = useState(0);
+    const [totalRating, setTotalRating] = useState(0);
     const [adminData, setAdminData] = useState(null);
     const [isBooked, setBooked] = useState(false);
     const [liked, isLiked] = useState(false);
@@ -36,6 +38,8 @@ export default function ClassDetails(props) {
             .doc(admin)
             .get()
 
+        setNumRatings(query2.data().numRatings);
+        setTotalRating(query2.data().totalRating);
         const admindata = query2.data();
         setAdminData(admindata)
 
@@ -62,6 +66,13 @@ export default function ClassDetails(props) {
                     isLiked(true)
                 }
             })
+    }
+
+    const getRating = () => {
+        if (numRatings == 0 || numRatings == null) {
+            return "Rating not available"
+        }
+        return (totalRating / numRatings).toFixed(2)
     }
 
     const favourite = async () => {
@@ -105,7 +116,7 @@ export default function ClassDetails(props) {
             console.log('Class is over')
             Alert.alert('This class is no longer available!')
         }
-        else if (isBooked) {
+        if (isBooked) {
             console.log('Class has been booked before')
             Alert.alert('You have already made a booking for this class!')
         } else {
@@ -119,7 +130,8 @@ export default function ClassDetails(props) {
                 classid: id,
                 date: date,
                 admin: adminData.name,
-                title: classData.title
+                title: classData.title,
+                hasRated: false,
             })
             .then(() => {
                 Alert.alert('Class has been booked successfully!')
@@ -197,21 +209,13 @@ export default function ClassDetails(props) {
                 <TouchableOpacity
                     onPress={() => props.navigation.goBack()}
                     style={{
-                        width: "50%"
+                        width: "100%"
                     }}
                 >
                     <AntDesign
                         name="arrowleft" color="black" size={25}
                     />
                 </TouchableOpacity>
-                <View style={{
-                    width: "50%",
-                    alignItems: "flex-end"
-                }}>
-                    <AntDesign
-                        name="search1" color="black" size={25}
-                    />
-                </View>
             </View>
             <ScrollView>
                 <Image
@@ -232,6 +236,14 @@ export default function ClassDetails(props) {
                                 name="addusergroup" color="black" size={25}
                             />
                         </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                    <View style={{marginRight:5}}>
+                        <AntDesign name='star' color='gold' size={20}/>
+                    </View>
+                    <View>
+                        <Text style={styles.description}>{getRating()}</Text>
                     </View>
                 </View>
                 <View style={styles.descriptionContainer}>

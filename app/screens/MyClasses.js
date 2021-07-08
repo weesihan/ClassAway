@@ -6,7 +6,7 @@ import { set } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function MyClasses(props) {
-
+    const currentDate = firebase.firestore.Timestamp.now()
     const [classes, setClasses] = useState([])
     const [isFetching, setFetching] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
@@ -53,10 +53,11 @@ export default function MyClasses(props) {
                 snapshot.forEach((doc) => {
                     let data = doc.data()
                     data.id = doc.id
-                    console.log(doc.data());
-                    tempClasses.push(data);
-                    console.log(tempClasses)
-
+                    if (data.date > currentDate) {
+                        console.log(doc.data());
+                        tempClasses.push(data);
+                        console.log(tempClasses)
+                    }
                 });
                 setClasses(tempClasses)
                 setFetching(false)

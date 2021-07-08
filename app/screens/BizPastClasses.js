@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-export default function PastClasses(props) {
+export default function BizPastClasses(props) {
     const [classes, setClasses] = useState([])
     const [isFetching, setFetching] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
@@ -25,14 +25,14 @@ export default function PastClasses(props) {
     const renderItem = ({ item }) => {
         return (
             <View alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={() => props.navigation.navigate("PastClassDetails", { id: item.classid })}>
+                <TouchableOpacity onPress={() => props.navigation.navigate("BizClassDetails", { id: item.id })}>
                     <View style={styles.item}>
                         <View style={{flexDirection: "row"}}>
                             <View style={{ width: "100%" }}>
                                 <Text style={styles.titleText}>{item.title}</Text>
                             </View>
                         </View>
-                        <Text style={styles.descText}>@ {item.admin}</Text>
+                        <Text style={styles.descText}>@ {firebase.auth().currentUser.displayName}</Text>
                         <Text style={styles.descText}>{getDate(item.date)}</Text>
                     </View>
                 </TouchableOpacity>
@@ -70,14 +70,14 @@ export default function PastClasses(props) {
         var tempClasses = []
         firebase
             .firestore()
-            .collection('Accounts')
-            .doc(currentUser)
-            .collection('bookedClasses')
+            .collection('Classes')
+            .where("admin", "==", currentUser)
             .get()
             .then((snapshot) => {
                 console.log(tempClasses);
                 snapshot.forEach((doc) => {
                     let data = doc.data()
+                    data.id = doc.id
                     if (data.date < currentDate) {
                         console.log('Class Date', data.date)
                         console.log('Current Date', currentDate)

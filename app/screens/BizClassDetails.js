@@ -9,6 +9,8 @@ export default function BizClassDetails(props) {
     const [date, setDate] = useState(new Object());
     const [adminData, setAdminData] = useState(null);
     const [attendees, setAttendees] = useState([])
+    const [numRatings, setNumRatings] = useState(0);
+    const [totalRating, setTotalRating] = useState(0);
     const [currentClasses, setClasses] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const id = props.route.params.id
@@ -41,7 +43,9 @@ export default function BizClassDetails(props) {
             .collection('Accounts')
             .doc(admin)
             .get()
-
+        
+        setNumRatings(query2.data().numRatings);
+        setTotalRating(query2.data().totalRating);
         const admindata = query2.data();
         setAdminData(admindata)
 
@@ -59,6 +63,13 @@ export default function BizClassDetails(props) {
                 setAttendees(tempAttendees)
             })
 
+    }
+
+    const getRating = () => {
+        if (numRatings == 0 || numRatings == null) {
+            return "Rating not available"
+        }
+        return (totalRating / numRatings).toFixed(2)
     }
 
     const getDate = (date) => {
@@ -84,6 +95,17 @@ export default function BizClassDetails(props) {
         return formatted
     }
 
+    const EmptyListMessage = () => {
+        console.log("empty list element")
+        return (
+            <View style={{ flex:1 }}>
+                <Text style={styles.description}>
+                    No Attendees Found
+                </Text>
+            </View>
+        );
+    };
+
     const renderItem = ({ item }) => {
         return (
             <Text style={styles.description}>
@@ -106,21 +128,13 @@ export default function BizClassDetails(props) {
                 <TouchableOpacity
                     onPress={() => props.navigation.goBack()}
                     style={{
-                        width: "50%"
+                        width: "100%"
                     }}
                 >
                     <AntDesign
                         name="arrowleft" color="black" size={25}
                     />
                 </TouchableOpacity>
-                <View style={{
-                    width: "50%",
-                    alignItems: "flex-end"
-                }}>
-                    <AntDesign
-                        name="search1" color="black" size={25}
-                    />
-                </View>
             </View>
             <ScrollView>
                 <Image
@@ -131,6 +145,14 @@ export default function BizClassDetails(props) {
                     <View style={{ width: "100%" }}>
                         <Text style={styles.subtitle}>{adminData ? adminData.name || adminData.name : 'Class Unavailable'}</Text>
                         <Text style={styles.title}>{classData ? classData.title || classData.title : 'Class'}</Text>
+                    </View>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                    <View style={{marginRight:5}}>
+                        <AntDesign name='star' color='gold' size={20}/>
+                    </View>
+                    <View>
+                        <Text style={styles.description}>{getRating()}</Text>
                     </View>
                 </View>
                 <View style={styles.descriptionContainer}>
@@ -163,6 +185,7 @@ export default function BizClassDetails(props) {
                         keyExtractor={(item) => item}
                         extraData={attendees}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        ListEmptyComponent={EmptyListMessage()}
                     />
                 </View>
             </ScrollView>

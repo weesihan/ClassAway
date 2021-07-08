@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView, Modal } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
+import StarRating from 'react-native-star-rating';
+import { set } from 'react-native-reanimated';
 
-export default function BookedClassDetails(props) {
+export default function PastClassDetails(props) {
     const [classData, setClassData] = useState(null);
     const [date, setDate] = useState(new Object());
+    const [admin, setAdmin] = useState("")
     const [adminData, setAdminData] = useState(null);
+    const [hasRated, setRated] = useState(false);
     const [liked, isLiked] = useState(false);
+    const [visible, isVisible] = useState(false);
+    const [stars, setStars] = useState(5);
+    const [numRatings, setNumRatings] = useState(0);
+    const [totalRating, setTotalRating] = useState(0);
     const currentUser = firebase.auth().currentUser.email;
     const id = props.route.params.id;
-    const currentDate = firebase.firestore.Timestamp.now();
 
     const getData = async () => {
         let query1 = await firebase.firestore()
@@ -20,18 +27,18 @@ export default function BookedClassDetails(props) {
 
         const classdata = query1.data();
         const admin = query1.data().admin;
+        setAdmin(admin)
         const date = query1.data().date;
         setClassData(classdata);
         setDate(date);
-        if (date < currentDate) {
-            setPassed(true);
-        }
 
         let query2 = await firebase.firestore()
             .collection('Accounts')
             .doc(admin)
             .get()
 
+        setNumRatings(query2.data().numRatings);
+        setTotalRating(query2.data().totalRating);
         const admindata = query2.data();
         setAdminData(admindata)
 
@@ -46,29 +53,25 @@ export default function BookedClassDetails(props) {
                     isLiked(true)
                 }
             })
+        
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('bookedClasses')
+            .doc(id)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    setRated(doc.data().hasRated)
+                }
+        })
     }
 
-    const cancelClass = () => {
-        firebase.firestore()
-        .collection('Accounts')
-        .doc(currentUser)
-        .collection('bookedClasses')
-        .doc(id)
-        .delete()
-        .then(() => {
-            console.log(id, "Document successfully deleted!")
-        })
-
-        firebase.firestore()
-        .collection('Classes')
-        .doc(id)
-        .collection('Attendees')
-        .doc(currentUser)
-        .delete()
-        .then(() => {
-            console.log(currentUser, "Document successfully deleted!");
-            props.navigation.goBack()
-        })
+    const getRating = () => {
+        if (numRatings == 0 || numRatings == null) {
+            return "Rating not available"
+        }
+        return (totalRating / numRatings).toFixed(2)
     }
 
     const favourite = async () => {
@@ -103,6 +106,47 @@ export default function BookedClassDetails(props) {
                     console.log("Document successfully deleted!");
                 })
             isLiked(false)
+        }
+    }
+
+    const starRating = (value) => {
+        setStars(value)
+    }
+
+    const giveRating = async (value, id) => {
+        if (hasRated) {
+            Alert.alert('You have already left a review for this class!')
+        } else {
+            let query = await firebase.firestore()
+                .collection('Accounts')
+                .doc(admin)
+                .get()
+        const classData = query.data()
+        console.log(classData)
+        const newRating = classData.totalRating + value; 
+        const newNumRatings = classData.numRatings + 1;
+        console.log(id, newRating, newNumRatings)
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(admin)
+            .update({
+                totalRating: newRating,
+                numRatings: newNumRatings,
+            })
+
+        await firebase.firestore()
+            .collection('Accounts')
+            .doc(currentUser)
+            .collection('bookedClasses')
+            .doc(id)
+            .update({
+                hasRated: true,
+            })
+        
+        Alert.alert('Thank you for leaving a review for this class!')
+        
+        isVisible(false)
+        console.log('Rating has been given', stars)
         }
     }
 
@@ -189,6 +233,14 @@ export default function BookedClassDetails(props) {
                         </TouchableOpacity>
                     </View>
                 </View>
+                <View style={{flexDirection:'row'}}>
+                    <View style={{marginRight:5}}>
+                        <AntDesign name='star' color='gold' size={20}/>
+                    </View>
+                    <View>
+                        <Text style={styles.description}>{getRating()}</Text>
+                    </View>
+                </View>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.subtitle}>About</Text>
                     <Text style={styles.description}>
@@ -212,28 +264,49 @@ export default function BookedClassDetails(props) {
                     <Text style={styles.description}>{getDate(date)}</Text>
                 </View>
             </ScrollView>
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.bookButton}
-                    onPress={() => Alert.alert(
-                        "Cancel Class",
-                        "Are you sure you want to cancel this class?",
-                        [
-                            {
-                                text: "Cancel",
-                                onPress: () => console.log("Cancel Pressed"),
-                                style: "cancel"
-                            },
-                            { text: "OK", onPress: () => { 
-                                cancelClass()
-                                console.log("OK Pressed")}
-                            }
-                        ],
-                            { cancelable: false }
-                        )
-                }>
-                    <Text>CANCEL</Text>
-                </TouchableOpacity>
-            </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={visible}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                isVisible(!visible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Leave a rating for this class!</Text>
+                    <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        starSize={30}
+                        starStyle={{color: 'gold'}}
+                        rating={stars}
+                        selectedStar={(rating) => {
+                            starRating(rating)}}
+                    />
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => giveRating(stars, id)}
+                        >
+                            <Text style={styles.buttonText}>Submit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => isVisible(false)}
+                        >
+                            <Text style={styles.buttonText}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                </View>
+            </Modal>
+            <TouchableOpacity style={styles.bookButton}
+                onPress={() => isVisible(true)}
+            >
+                <Text style={styles.buttonText}>Leave a rating!</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -287,4 +360,51 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         borderRadius: 8,
     },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2},
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalText: {
+        marginBottom: 10,
+        textAlign: "center",
+        fontFamily: 'Poppins-Medium',
+    },
+    bookButton: {
+        alignItems: "center",
+        backgroundColor: "#B1B2F5",
+        fontFamily: 'Poppins-Medium',
+        padding: 10,
+        paddingHorizontal: 4,
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: "white",
+        fontFamily: 'Poppins-Medium',
+        fontSize: 15
+    },
+    button: {
+        borderRadius: 30,
+        padding: 10,
+        marginTop: 10,
+        margin: 3
+    },
+    buttonClose: {
+        backgroundColor: "#6995FF",
+      },
 });
