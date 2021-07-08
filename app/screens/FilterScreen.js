@@ -216,7 +216,11 @@ export default function FilterScreen(props) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-
+                        <View style={{alignItems:"flex-end"}}>
+                            <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                <AntDesign name='close' color='black' size={25}/>
+                            </TouchableOpacity>
+                        </View>
                         <Text style={styles.selectText}>Region</Text>
                         <DropDownPicker
                             placeholder="Select a region"
@@ -331,7 +335,6 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
-        alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
