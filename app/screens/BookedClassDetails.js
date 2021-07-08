@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
 
@@ -68,6 +68,7 @@ export default function BookedClassDetails(props) {
         .then(() => {
             console.log(currentUser, "Document successfully deleted!");
             props.navigation.goBack()
+            Alert.alert('Class has been cancelled!')
         })
     }
 

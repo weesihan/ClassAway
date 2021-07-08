@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert, Image, ScrollView, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, ScrollView, Modal } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import firebase from '../database/firebase';
 import StarRating from 'react-native-star-rating';
@@ -142,11 +142,10 @@ export default function PastClassDetails(props) {
             .update({
                 hasRated: true,
             })
-        
-        Alert.alert('Thank you for leaving a review for this class!')
-        
-        isVisible(false)
-        console.log('Rating has been given', stars)
+            .then(() => {
+                console.log('Rating has been given', stars)
+                isVisible(false)
+            })
         }
     }
 
@@ -269,7 +268,6 @@ export default function PastClassDetails(props) {
                 transparent={true}
                 visible={visible}
                 onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
                 isVisible(!visible);
                 }}
             >
