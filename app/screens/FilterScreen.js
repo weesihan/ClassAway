@@ -15,15 +15,8 @@ export default function FilterScreen(props) {
     const [region, setRegion] = useState(null)
     const [minPrice, setMinPrice] = useState("")
     const [maxPrice, setMaxPrice] = useState("")
-    //const [startDate, setStartDate] = useState("")
-    //const [endDate, setEndDate] = useState("")
-    //const [displayedDate, setDisplay] = useState("Select a date")
-    //const [time, setTime] = useState("")
     const [categories, setCategories] = useState([])
-    //const [difficulty, setDifficulty] = useState("")
-    //const [date, setDate] = useState("")
-    //const [startDatePicker, setStartDatePicker] = useState("Select date");
-    //const [endDatePicker, setEndDatePicker] = useState("Select date");
+    const currentDate = firebase.firestore.Timestamp.now()
 
     const clearState = () => {
         setRegion("");
@@ -126,7 +119,6 @@ export default function FilterScreen(props) {
         setFetching(true)
         console.log(isFetching)
         var tempClasses = []
-        const currentDate = firebase.firestore.Timestamp.now()
         firebase
             .firestore()
             .collection('Classes')
@@ -154,13 +146,11 @@ export default function FilterScreen(props) {
         setFetching(true)
         console.log(isFetching)
         var tempClasses = []
-        const currentDate = firebase.firestore.Timestamp.now()
         firebase
             .firestore()
             .collection('Classes')
             .where('categories', 'array-contains-any', categories)
             .where('region', '==', region)
-            .where('date', '>=', currentDate)
             .get()
             .then((snapshot) => {
                 console.log(tempClasses);
@@ -172,12 +162,19 @@ export default function FilterScreen(props) {
                     console.log(tempClasses)
 
                 });
-                setClasses(tempClasses)
+                const dateClasses = tempClasses.filter((item) => {
+                    return item.date >= currentDate
+                })
+                const priceClasses = dateClasses.filter((item) => {
+                    return item.cost >= minPrice && item.cost <= maxPrice
+                })
+                setClasses(priceClasses)
                 setFetching(false)
-                console.log(classes)
+                console.log(dateClasses)
                 console.log(isFetching)
             }
             )
+        
     }
 
     useEffect(() => { getData() }, []);
