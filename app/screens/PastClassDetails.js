@@ -321,11 +321,14 @@ export default function PastClassDetails(props) {
                 </View>
                 </View>
             </Modal>
-            <TouchableOpacity style={styles.bookButton}
-                onPress={() => isVisible(true)}
-            >
-                <Text style={styles.buttonText}>Leave a rating!</Text>
-            </TouchableOpacity>
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.bookButton}
+                    onPress={() => isVisible(true)}
+                >
+                    <Text style={styles.buttonText}>Leave a rating!</Text>
+                </TouchableOpacity>
+            </View>
+            
         </View>
     )
 }
@@ -403,14 +406,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: 10,
         fontFamily: 'Poppins-Medium',
-    },
-    bookButton: {
-        alignItems: "center",
-        backgroundColor: "#B1B2F5",
-        fontFamily: 'Poppins-Medium',
-        padding: 10,
-        paddingHorizontal: 4,
-        borderRadius: 8,
     },
     buttonText: {
         color: "white",
