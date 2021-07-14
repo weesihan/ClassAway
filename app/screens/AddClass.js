@@ -18,7 +18,7 @@ export default function AddClass(props) {
   const [date, setDate] = useState(new Date(1598051730000));
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [chosenDateTime, setDateTimePicker] = useState("Select date and time");
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(null);
   const [userData, setUserData] = useState(null);
   const [items, setItems] = useState([
     { label: 'Lifestyle', value: 'lifestyle' },
@@ -198,17 +198,17 @@ export default function AddClass(props) {
     .currentUser
     .email;
 
-  const getUser = async() => {
+  const getUser = async () => {
     const currentUser = await firebase.firestore()
-    .collection('Accounts')
-    .doc(email)
-    .get()
-    .then((documentSnapshot) => {
-      if( documentSnapshot.exists ) {
-        console.log('User Data', documentSnapshot.data());
-        setUserData(documentSnapshot.data());
-      }
-    })
+      .collection('Accounts')
+      .doc(email)
+      .get()
+      .then((documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          console.log('User Data', documentSnapshot.data());
+          setUserData(documentSnapshot.data());
+        }
+      })
   }
 
   const addClass = async () => {
@@ -216,7 +216,7 @@ export default function AddClass(props) {
 
     // if any empty fields, alert 
     console.log("addClass pressed")
-    if (className === '' || description === '' || cost === '') {
+    if (className === '' || description === '' || cost === '' || chosenDateTime === 'Select date and time' || categories === null) {
       alert('Please fill in blank fields')
     } else {
       firebase.firestore().collection("Classes").doc().set({
