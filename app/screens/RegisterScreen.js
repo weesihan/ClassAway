@@ -7,7 +7,7 @@ export default function Signup(props) {
   const[display, setDisplay] = useState("");
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
-  const[region, setRegion] = useState([]);
+  const[region, setRegion] = useState(null);
   const[isUser, setUser] = useState(false);
   const[role, setRole] = useState("Business");
   const[isLoading, setLoading] = useState(false);
@@ -19,12 +19,7 @@ export default function Signup(props) {
     { label: 'Central', value: 'central' },
     { label: 'Others', value: 'others' }]);
   const[open, setOpen] = useState(false);
-
-/*  updateInputVal = (val, prop) => {
-    const state = this.state;
-    state[prop] = val;
-    this.setState(state);
-  } */
+  const[errorMessage, setError] = useState(null)
 
   const toggleFunction = () => {
     if (isUser) {
@@ -37,8 +32,8 @@ export default function Signup(props) {
   }
 
   const registerUser = () => {
-    if (email === '' && password === '') {
-      Alert.alert('Enter details to sign up!')
+    if (email === '' || password === '' || display === '' || region === null) {
+      Alert.alert('Enter all fields to sign up!')
     } else {
       setLoading(true)
       firebase
@@ -58,32 +53,32 @@ export default function Signup(props) {
             })
         console.log('User registered successfully!')
         setLoading(false);
-        setDisplay("");
         setEmail("");
         setPassword("");
         if (isUser) {
           props.navigation.navigate('Login')
+          Alert.alert('User registered successfully!')
         } else {
           props.navigation.navigate('RegisterBusiness', {email: email})
         }
       })
-      .catch(error => {this.setState({ errorMessage: error.message })
+      .catch(error => {
+        setError(error.message)
         console.log("error", error.message, error.code)
         switch (error.code)
             {
             case "auth/invalid-email":
               setLoading(false);
-              setDisplay("");
               setEmail("");
               setPassword("");
-            Alert.alert("Username/Email is invalid")
+            Alert.alert("Please enter a valid email")
             break;
 
             case "auth/email-already-in-use":
               setLoading(false);
               setEmail("");
               setPassword("");
-            Alert.alert("Username/Email is invalid as it already exists")
+            Alert.alert("Email already exists")
             break;
 
             case "auth/weak-password":
@@ -94,7 +89,7 @@ export default function Signup(props) {
             break;
 
             default:
-              Alert.alert("Invalid user")
+              Alert.alert("Invalid fields")
               setLoading(false);
               setEmail("");
               setPassword("");

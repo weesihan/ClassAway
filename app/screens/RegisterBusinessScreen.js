@@ -21,6 +21,7 @@ export default function RegisterBusiness(props) {
                   totalRatings: 0
               }, { merge: true })
           console.log('Business registered successfully!')
+          Alert.alert('Business registered successfully!')
           props.navigation.navigate('Login')
         }
       }
