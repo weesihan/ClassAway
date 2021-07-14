@@ -126,9 +126,11 @@ export default function FilterScreen(props) {
         setFetching(true)
         console.log(isFetching)
         var tempClasses = []
+        const currentDate = firebase.firestore.Timestamp.now()
         firebase
             .firestore()
             .collection('Classes')
+            .where('date', '>=', currentDate)
             .get()
             .then((snapshot) => {
                 console.log(tempClasses);
@@ -152,11 +154,13 @@ export default function FilterScreen(props) {
         setFetching(true)
         console.log(isFetching)
         var tempClasses = []
+        const currentDate = firebase.firestore.Timestamp.now()
         firebase
             .firestore()
             .collection('Classes')
             .where('categories', 'array-contains-any', categories)
             .where('region', '==', region)
+            .where('date', '>=', currentDate)
             .get()
             .then((snapshot) => {
                 console.log(tempClasses);
@@ -216,9 +220,9 @@ export default function FilterScreen(props) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <View style={{alignItems:"flex-end"}}>
+                        <View style={{ alignItems: "flex-end" }}>
                             <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <AntDesign name='close' color='black' size={25}/>
+                                <AntDesign name='close' color='black' size={25} />
                             </TouchableOpacity>
                         </View>
                         <Text style={styles.selectText}>Region</Text>
@@ -276,7 +280,6 @@ export default function FilterScreen(props) {
                                 onChangeText={(max) => setMaxPrice(parseFloat(max))}
                             />
                         </View>
-                        <Text style={styles.selectText}>Date</Text>
 
                         <Pressable
                             onPress={() => {
