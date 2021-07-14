@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
 import BottomSheet from 'reanimated-bottom-sheet';
 import firebase from '../database/firebase';
@@ -115,11 +115,11 @@ export default function AddClass(props) {
       if (Platform.OS !== 'web') {
         let libstatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (libstatus.status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+          Alert.alert('Sorry, we need camera roll permissions to make this work!');
         }
         let camstatus = await ImagePicker.requestCameraPermissionsAsync();
         if (camstatus.status !== 'granted') {
-          alert('Sorry, we need camera permissions to make this work!');
+          Alert.alert('Sorry, we need camera permissions to make this work!');
         }
       }
     })
@@ -217,7 +217,7 @@ export default function AddClass(props) {
     // if any empty fields, alert 
     console.log("addClass pressed")
     if (className === '' || description === '' || cost === '' || chosenDateTime === 'Select date and time' || categories === null) {
-      alert('Please fill in blank fields')
+      Alert.alert('Please fill in blank fields')
     } else {
       firebase.firestore().collection("Classes").doc().set({
         title: className,
@@ -230,7 +230,7 @@ export default function AddClass(props) {
         location: userData.address,
         region: userData.region,
       });
-      alert("Class created successfully")
+      Alert.alert("Class created successfully")
       clearState()
       props.navigation.navigate('MyClasses')
     }
