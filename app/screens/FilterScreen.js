@@ -13,16 +13,16 @@ export default function FilterScreen(props) {
     const [refreshing, setRefreshing] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [region, setRegion] = useState(null)
-    const [minPrice, setMinPrice] = useState("")
-    const [maxPrice, setMaxPrice] = useState("")
+    const [minPrice, setMinPrice] = useState(0)
+    const [maxPrice, setMaxPrice] = useState(10000)
     const [categories, setCategories] = useState([])
     const currentDate = firebase.firestore.Timestamp.now()
 
     const clearState = () => {
-        setRegion("");
+        setRegion(null);
         setCategories([]);
-        setMinPrice("");
-        setMaxPrice("");
+        setMinPrice(0);
+        setMaxPrice(100000);
         setCategoryOpen(false);
         setRegionOpen(false);
     }
@@ -143,37 +143,44 @@ export default function FilterScreen(props) {
     }
 
     const getResults = () => {
-        setFetching(true)
-        console.log(isFetching)
-        var tempClasses = []
-        firebase
-            .firestore()
-            .collection('Classes')
-            .where('categories', 'array-contains-any', categories)
-            .where('region', '==', region)
-            .get()
-            .then((snapshot) => {
-                console.log(tempClasses);
-                snapshot.forEach((doc) => {
-                    let data = doc.data()
-                    data.id = doc.id
-                    console.log(doc.data());
-                    tempClasses.push(data);
-                    console.log(tempClasses)
-
-                });
-                const dateClasses = tempClasses.filter((item) => {
-                    return item.date >= currentDate
-                })
-                const priceClasses = dateClasses.filter((item) => {
-                    return item.cost >= minPrice && item.cost <= maxPrice
-                })
-                setClasses(priceClasses)
-                setFetching(false)
-                console.log(dateClasses)
-                console.log(isFetching)
-            }
+        if (region === null || categories === []) {
+            Alert.alert(
+                'Please fill in the region and categories fields to filter results!',
             )
+        } else {
+            setFetching(true)
+            console.log(isFetching)
+            var tempClasses = []
+            firebase
+                .firestore()
+                .collection('Classes')
+                .where('categories', 'array-contains-any', categories)
+                .where('region', '==', region)
+                .get()
+                .then((snapshot) => {
+                    console.log(tempClasses);
+                    snapshot.forEach((doc) => {
+                        let data = doc.data()
+                        data.id = doc.id
+                        console.log(doc.data());
+                        tempClasses.push(data);
+                        console.log(tempClasses)
+
+                    });
+                    const dateClasses = tempClasses.filter((item) => {
+                        return item.date >= currentDate
+                    })
+                    const priceClasses = dateClasses.filter((item) => {
+                        return item.cost >= minPrice && item.cost <= maxPrice
+                    })
+                    setClasses(priceClasses)
+                    setFetching(false)
+                    console.log(dateClasses)
+                    console.log(isFetching)
+                    setModalVisible(!modalVisible)
+                }
+                )
+        }
         
     }
 
@@ -280,7 +287,6 @@ export default function FilterScreen(props) {
 
                         <Pressable
                             onPress={() => {
-                                setModalVisible(!modalVisible)
                                 console.log(region)
                                 console.log(categories)
                                 console.log(minPrice)
