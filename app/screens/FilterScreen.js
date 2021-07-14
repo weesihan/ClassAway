@@ -143,7 +143,7 @@ export default function FilterScreen(props) {
     }
 
     const getResults = () => {
-        if (region === null || categories === []) {
+        if (region === null || categories.length === 0) {
             Alert.alert(
                 'Please fill in the region and categories fields to filter results!',
             )
