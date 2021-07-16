@@ -290,6 +290,10 @@ export default function ClassDetails(props) {
                     <Text style={styles.subtitle}>Date</Text>
                     <Text style={styles.description}>{getDate(date)}</Text>
                 </View>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.subtitle}>About {adminData ? adminData.name || adminData.name : 'Unavailable'}</Text>
+                    <Text style={styles.description}>{adminData ? adminData.description || adminData.description : 'Description Unavailable'}</Text>
+                </View>
             </ScrollView>
             <View style={styles.footer}>
                 <Text style={styles.description}>Pax</Text>

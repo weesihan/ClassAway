@@ -4,13 +4,24 @@ import * as ImagePicker from 'expo-image-picker'
 import BottomSheet from 'reanimated-bottom-sheet';
 import firebase from '../database/firebase';
 import { AntDesign } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function BusinessSettings(props) {
 
   const [profilePhoto, setProfilePhoto] = useState(firebase.auth().currentUser.photoURL);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
+  const [region, setRegion] = useState([])
   const [userData, setUserData] = useState(null);
+  const [items, setItems] = useState([
+    { label: 'East', value: 'east' },
+    { label: 'West', value: 'west' },
+    { label: 'North', value: 'north' },
+    { label: 'Northeast', value: 'northeast' },
+    { label: 'Central', value: 'central' },
+    { label: 'Others', value: 'others' },
+  ]);
+  const [open, setOpen] = useState(false);
   const bs = React.createRef();
   const email = firebase
     .auth()
@@ -27,6 +38,7 @@ export default function BusinessSettings(props) {
         console.log('User Data', documentSnapshot.data());
         console.log(profilePhoto)
         setUserData(documentSnapshot.data());
+        setRegion(documentSnapshot.data().region)
       }
     })
   }
@@ -181,6 +193,7 @@ export default function BusinessSettings(props) {
       description: userData.description,
       number: userData.number,
       address: userData.address,
+      region: userData.region
     })
     .then(() => {
       console.log('User Updated!', userData);
@@ -203,21 +216,22 @@ export default function BusinessSettings(props) {
       />
       <View style={{
           flexDirection: "row",
-          width: "93%",
-          marginTop: 5
+          marginTop: 10,
+          alignItems: "center",
         }}>
+          <View style={{width: "22%"}}>
             <TouchableOpacity
                 onPress={() => props.navigation.goBack()}
-                style={{
-                  width: "100%"
-                }}
             >
               <AntDesign
                   name="arrowleft" color="black" size={25}
               />
             </TouchableOpacity>
+          </View>
+          <View style={{width: "78%"}}>
+            <Text style={styles.title}>Edit Profile</Text>
+          </View>
       </View>
-      <Text style={styles.title}>Edit Profile</Text>
       <View style={{ alignItems: 'center', padding: 5 }}>
         <TouchableOpacity onPress={() => bs.current.snapTo(0)}>
           <View
@@ -255,7 +269,7 @@ export default function BusinessSettings(props) {
           </View>
         </TouchableOpacity>
       </View>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{alignItems: 'center'}}>
+      <View alignItems="center" justifyContent="center">
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
@@ -283,6 +297,26 @@ export default function BusinessSettings(props) {
           value={userData ? userData.description : ''}
           onChangeText={(txt) => setUserData({...userData, description: txt})}
         />
+        </View>
+        <View alignItems="center">
+            <DropDownPicker
+                min={1}
+                placeholder="Select a region"
+                open={open}
+                value={region}
+                items={items}
+                setOpen={setOpen}
+                setValue={setRegion}
+                setItems={setItems}
+                placeholderStyle={{ color: "grey" }}
+                dropDownDirection='TOP'
+                selectedItemLabelStyle={styles.selectedText}
+                listItemLabelStyle={styles.pickerText}
+                onChangeValue={(value) => setUserData({...userData, region: value})}
+                containerStyle={styles.pickerMenu}
+                placeholderStyle={styles.pickerText}
+            />
+        </View>
       
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
@@ -294,7 +328,6 @@ export default function BusinessSettings(props) {
           <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
       </View>
-      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -428,22 +461,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   pickerMenu: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
     width: 300,
-    padding: 20,
-    marginBottom: 10,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    borderColor: '#A6A6A6'
+    margin: 10,
   },
   selectedText: {
     color: '#3740FE',
     fontFamily: 'Poppins-Bold',
   },
   pickerText: {
-    color: 'grey',
+    color: '#A6A6A6',
     fontFamily: 'Poppins-Medium',
   },
   selectText: {

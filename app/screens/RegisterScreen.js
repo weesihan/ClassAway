@@ -15,9 +15,8 @@ export default function Signup(props) {
     { label: 'East', value: 'east' },
     { label: 'West', value: 'west' },
     { label: 'North', value: 'north' },
-    { label: 'South', value: 'south' },
-    { label: 'Central', value: 'central' },
-    { label: 'Others', value: 'others' }]);
+    { label: 'Northeast', value: 'northeast' },
+    { label: 'Central', value: 'central' }]);
   const[open, setOpen] = useState(false);
   const[errorMessage, setError] = useState(null)
 
