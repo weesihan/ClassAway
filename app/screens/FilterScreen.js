@@ -38,7 +38,7 @@ export default function FilterScreen(props) {
     ]);
     const [regions, setRegions] = useState([
         { label: 'North', value: 'north' },
-        { label: 'South', value: 'south' },
+        { label: 'Northeast', value: 'northeast' },
         { label: 'East', value: 'east' },
         { label: 'West', value: 'west' },
         { label: 'Central', value: 'central' },

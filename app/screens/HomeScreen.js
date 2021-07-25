@@ -12,6 +12,7 @@ export default function HomeScreen(props) {
     const [favourites, setFavourites] = useState([]);
     const [isFetching, setFetching] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const currentDate = firebase.firestore.Timestamp.now()
 
 
     const onRefresh = useCallback(() => {
@@ -66,6 +67,7 @@ export default function HomeScreen(props) {
             .firestore()
             .collection('Accounts').doc(currentUser)
             .collection('favourites')
+            .where('date', '>=', currentDate)
             .get()
             .then((snapshot) => {
                 console.log(faveClasses);
@@ -104,7 +106,10 @@ export default function HomeScreen(props) {
                     console.log(nearbyClasses)
 
                 });
-                setClasses(nearbyClasses)
+                const dateClasses = nearbyClasses.filter((item) => {
+                    return item.date >= currentDate
+                })
+                setClasses(dateClasses)
                 setFetching(false)
                 console.log(isFetching)
             }
