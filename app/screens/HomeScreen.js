@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, Refr
 import firebase from '../database/firebase';
 import Card from '../components/Card.js'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
 
 
 export default function HomeScreen(props) {
