@@ -192,14 +192,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 
 # Architectural Diagram
 
-
-
-<p id="gdcalert20" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image20.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert21">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image20.png "image_tooltip")
-
-
+![Architecture](https://user-images.githubusercontent.com/77946288/126960147-83972a8e-f7cd-4b17-9b5b-f64014839f5d.png)
 
 # Quality Assurance (User Testing and System Testing)
 
