@@ -5,7 +5,7 @@
 
 ClassAway is a cross-platform mobile application that serves as centralised platform that can match consumer’s (young adults) interests to available classes/workshops provided by businesses. Our goal is to help niche, local businesses reach a larger audience and for users to easily find new, unique activities to try.
 
-
+![ClassAway final ](https://user-images.githubusercontent.com/62155825/126958606-f7af3471-ec9d-42d8-bbf9-8669cb0873b5.png)
 
 # Video guide link
 
