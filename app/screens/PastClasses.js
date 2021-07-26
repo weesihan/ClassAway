@@ -111,7 +111,7 @@ export default function PastClasses(props) {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <View style={{
                 flexDirection: "row",
                 width: "93%",
@@ -141,7 +141,7 @@ export default function PastClasses(props) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ListEmptyComponent={EmptyListMessage()}
             />
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 50, 
     },
     item: {
         backgroundColor: 'white',

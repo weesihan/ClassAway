@@ -27,21 +27,21 @@ export default function MyBookings(props) {
             <View alignItems="center" justifyContent="center">
                 <TouchableOpacity onPress={() => props.navigation.navigate("BookedClassDetails", { id: item.classid })}>
                     <View style={styles.item}>
-                        <View style={{flexDirection: "row"}}>
+                        <View style={{ flexDirection: "row" }}>
                             <View style={{ width: "80%" }}>
                                 <Text style={styles.titleText}>{item.title}</Text>
                             </View>
                             <View style={{ width: "20%", alignItems: "flex-end" }}>
-                                
+
                             </View>
                         </View>
                         <Text style={styles.descText}>@ {item.admin}</Text>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "90%" }}>
                                 <Text style={styles.descText}>{getDate(item.date)}</Text>
                             </View>
-                            <View style={{flexDirection: 'row', width: "10%"}}>
-                                <AntDesign name="user" color="black" size={18}/>
+                            <View style={{ flexDirection: 'row', width: "10%" }}>
+                                <AntDesign name="user" color="black" size={18} />
                                 <Text style={styles.descText}> {item.pax} </Text>
                             </View>
                         </View>
@@ -122,8 +122,8 @@ export default function MyBookings(props) {
 
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={{width: '90%'}}>
+        <View style={styles.container}>
+            <View style={{ width: '90%' }}>
                 <Text style={styles.classText}>
                     My Bookings
                 </Text>
@@ -136,7 +136,7 @@ export default function MyBookings(props) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ListEmptyComponent={EmptyListMessage()}
             />
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 50,
     },
     item: {
         backgroundColor: 'white',

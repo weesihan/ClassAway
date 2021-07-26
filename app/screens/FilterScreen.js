@@ -187,7 +187,7 @@ export default function FilterScreen(props) {
     useEffect(() => { getData() }, []);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
 
 
             <View style={styles.pageHeader}>
@@ -300,7 +300,7 @@ export default function FilterScreen(props) {
                 </View>
             </Modal>
 
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 50,
     },
     pageHeader: {
         backgroundColor: 'white',

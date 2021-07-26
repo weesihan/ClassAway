@@ -123,7 +123,6 @@ export default function BizClassDetails(props) {
             <View style={{
                 flexDirection: "row",
                 width: "100%",
-                marginTop: 40
             }}>
                 <TouchableOpacity
                     onPress={() => props.navigation.goBack()}
@@ -197,7 +196,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FFF",
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        marginTop: 50
     },
     classImage: {
         flex: 1,

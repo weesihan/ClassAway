@@ -50,7 +50,7 @@ export default function ProfileScreen(props) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.userInfo}>
                 <View style={{flexDirection: 'row', marginTop: 15}}>
@@ -88,7 +88,7 @@ export default function ProfileScreen(props) {
                 </TouchableRipple>
             </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        marginTop: 50,
     },
     userInfo:{
         paddingHorizontal: 30,

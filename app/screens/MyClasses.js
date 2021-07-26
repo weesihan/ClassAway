@@ -82,7 +82,7 @@ export default function MyClasses(props) {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <Text style={styles.classText}>
                 My classes
             </Text>
@@ -94,7 +94,7 @@ export default function MyClasses(props) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ListEmptyComponent={EmptyListMessage()}
             />
-        </SafeAreaView>
+        </View>
 
     );
 }
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 50
     },
     containerScroll: {
         flex: 1,

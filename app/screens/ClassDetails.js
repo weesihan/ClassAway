@@ -79,21 +79,21 @@ export default function ClassDetails(props) {
 
         if (!liked) {
             await firebase.firestore()
-            .collection('Accounts')
-            .doc(currentUser)
-            .collection('favourites')
-            .doc(id)
-            .set({
-                classid: id,
-                date: date,
-                admin: adminData.name,
-                title: classData.title,
-                categories: classData.categories,
-                cost: classData.cost,
-                description: classData.description,
-                location: classData.location,
-                pic: classData.pic,
-            })
+                .collection('Accounts')
+                .doc(currentUser)
+                .collection('favourites')
+                .doc(id)
+                .set({
+                    classid: id,
+                    date: date,
+                    admin: adminData.name,
+                    title: classData.title,
+                    categories: classData.categories,
+                    cost: classData.cost,
+                    description: classData.description,
+                    location: classData.location,
+                    pic: classData.pic,
+                })
             isLiked(true)
             console.log('Class has been liked')
         } else {
@@ -121,21 +121,21 @@ export default function ClassDetails(props) {
             Alert.alert('You have already made a booking for this class!')
         } else {
             await firebase.firestore()
-            .collection('Accounts')
-            .doc(currentUser)
-            .collection('bookedClasses')
-            .doc(id)
-            .set({
-                pax: pax,
-                classid: id,
-                date: date,
-                admin: adminData.name,
-                title: classData.title,
-                hasRated: false,
-            })
-            .then(() => {
-                Alert.alert('Class has been booked successfully!')
-            })
+                .collection('Accounts')
+                .doc(currentUser)
+                .collection('bookedClasses')
+                .doc(id)
+                .set({
+                    pax: pax,
+                    classid: id,
+                    date: date,
+                    admin: adminData.name,
+                    title: classData.title,
+                    hasRated: false,
+                })
+                .then(() => {
+                    Alert.alert('Class has been booked successfully!')
+                })
 
             await firebase.firestore()
                 .collection('Classes')
@@ -157,25 +157,25 @@ export default function ClassDetails(props) {
 
     const onShare = async () => {
         try {
-          const result = await Share.share({
-            message:
-              'Join me in this class!',
-            url: 'https://github.com/weesihan/ClassAway',
-            title: 'ClassAway'
-          });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
+            const result = await Share.share({
+                message:
+                    'Join me in this class!',
+                url: 'https://github.com/weesihan/ClassAway',
+                title: 'ClassAway'
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
             }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
         } catch (error) {
-          alert(error.message);
+            alert(error.message);
         }
-      };
+    };
 
     const getDate = (date) => {
         var t = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
@@ -203,18 +203,18 @@ export default function ClassDetails(props) {
     const renderElement = () => {
         if (liked) {
             return <TouchableOpacity
-                        onPress={favourite}>
-                            <AntDesign
-                                name="heart" color="#6559ff" size={25}
-                            />
-                    </TouchableOpacity>
+                onPress={favourite}>
+                <AntDesign
+                    name="heart" color="#6559ff" size={25}
+                />
+            </TouchableOpacity>
         }
         return <TouchableOpacity
-                onPress={favourite}>
-                    <AntDesign
-                        name="hearto" color="black" size={25}
-                    />
-                </TouchableOpacity>
+            onPress={favourite}>
+            <AntDesign
+                name="hearto" color="black" size={25}
+            />
+        </TouchableOpacity>
     }
 
     useEffect(() => {
@@ -226,7 +226,6 @@ export default function ClassDetails(props) {
             <View style={{
                 flexDirection: "row",
                 width: "100%",
-                marginTop: 40
             }}>
                 <TouchableOpacity
                     onPress={() => props.navigation.goBack()}
@@ -250,7 +249,7 @@ export default function ClassDetails(props) {
                         <Text style={styles.title}>{classData ? classData.title || classData.title : 'Class'}</Text>
                     </View>
                     <View style={{ width: "10%", alignItems: "flex-end" }}>
-                        { renderElement() }
+                        {renderElement()}
                     </View>
                     <View style={{ width: "10%", alignItems: "flex-end" }}>
                         <TouchableOpacity onPress={() => onShare()}>
@@ -260,9 +259,9 @@ export default function ClassDetails(props) {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{flexDirection:'row'}}>
-                    <View style={{marginRight:5}}>
-                        <AntDesign name='star' color='gold' size={20}/>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginRight: 5 }}>
+                        <AntDesign name='star' color='gold' size={20} />
                     </View>
                     <View>
                         <Text style={styles.description}>{getRating()}</Text>
@@ -298,10 +297,10 @@ export default function ClassDetails(props) {
             <View style={styles.footer}>
                 <Text style={styles.description}>Pax</Text>
                 <Counter
-                    buttonStyle={{borderColor: '#333', borderWidth: 1 }}
-                    buttonTextStyle={{color: '#333',}}
-                    countTextStyle={{color: '#333',}}
-                    start={1} min={1} max={20} onChange={(len) => counter(len)}/>
+                    buttonStyle={{ borderColor: '#333', borderWidth: 1 }}
+                    buttonTextStyle={{ color: '#333', }}
+                    countTextStyle={{ color: '#333', }}
+                    start={1} min={1} max={20} onChange={(len) => counter(len)} />
                 <TouchableOpacity
                     onPress={book}
                     style={styles.bookButton}>
@@ -316,7 +315,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FFF",
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        marginTop: 50,
     },
     classImage: {
         flex: 1,

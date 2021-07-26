@@ -73,18 +73,9 @@ export default function UserSettings(props) {
 
     try {
       await task;
-
       const url = await storageRef.getDownloadURL();
-
       setUploading(false);
-
-      // Alert.alert(
-      //   'Image uploaded!',
-      //   'Your image has been uploaded to the Firebase Cloud Storage Successfully!',
-      // );
-
       return url;
-
     } catch (e) {
       console.log(e);
       return null;

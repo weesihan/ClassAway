@@ -291,6 +291,8 @@ export default function AddClass(props) {
           onChangeText={setClassName}
         />
         <TextInput
+          multiline
+          numberOfLines={4}
           style={styles.inputStyle}
           placeholder="Description"
           value={description}
