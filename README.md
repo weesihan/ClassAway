@@ -1,16 +1,8 @@
-**CP 2106**
+# ClassAway
+**CP 2106 Independent Software Development Project (Orbital)**
 
-**Independent Software Development Project (Orbital)**
+**Level of Achievement : Apollo 11**
 
-**Team ClassAway**
-
-Lethicia Renissa Santoso
-
-Wee Si Han
-
-**Level of Achievement**
-
-Apollo 11
 
 
 # Video guide link
