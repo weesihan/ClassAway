@@ -3,6 +3,8 @@
 
 **Level of Achievement : Apollo 11**
 
+ClassAway is a cross-platform mobile application that serves as centralised platform that can match consumer’s (young adults) interests to available classes/workshops provided by businesses. Our goal is to help niche, local businesses reach a larger audience and for users to easily find new, unique activities to try.
+
 
 
 # Video guide link
