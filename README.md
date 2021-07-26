@@ -172,7 +172,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 
 
 
-1. **Make changes to booking/class details **
+1. **Make changes to booking/class details**
 
     Users can change the number of pax that they have booked for once they have already booked for the class. Businesses should also be able to edit their class details once they have uploaded the class such as changing the description. Changes to date and time or price will be prohibited as users that have already booked the class would be affected. Businesses should also be able to delete a class.
 
@@ -200,7 +200,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 
 We gave each of our testers this list of scenarios to follow while using our application so that they can provide us with appropriate feedback.
 
-**Role: User **
+**Role: User**
 
 **Account:**
 
@@ -236,7 +236,7 @@ We gave each of our testers this list of scenarios to follow while using our app
 2. Leave a review on the first class found
 3. Go back to the “Profile” page and logout
 
-**Role: Business **
+**Role: Business**
 
 **Account:**
 
