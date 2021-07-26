@@ -96,7 +96,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 
 # Development Timeline
 
-**Milestone 1 (31 May) **
+**Milestone 1 (31 May)**
 
 **Setup (Registration and Login)**
 
@@ -116,7 +116,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 * Business Homepage : Display my current listed classes
 * User (Consumer) Homepage : Display all available classes in a flatlist
 
-**Add Classes and View Classes **
+**Add Classes and View Classes**
 
 
 
@@ -129,7 +129,7 @@ Businesses (e.g. Dance Studios, Pottery Studios, Coffee/Baking workshops, etc)
 
 * Allow businesses and user to edit profile and view past classes listed and booked respectively
 
-**Testing (System Testing) **
+**Testing (System Testing)**
 
 
 
