@@ -12,7 +12,7 @@ ClassAway is a cross-platform mobile application that serves as centralised plat
 
 This video guide will introduce the core features of our application.
 
-[https://drive.google.com/file/d/1AGn7eimEvhSPv5QrOi84PhcKj-JKI6op/view?usp=sharing)
+https://drive.google.com/file/d/1AGn7eimEvhSPv5QrOi84PhcKj-JKI6op/view?usp=sharing
 
 
 # Code Base
